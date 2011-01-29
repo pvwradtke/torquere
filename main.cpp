@@ -127,15 +127,15 @@ int main(int narg, char **valarg) {
     // Carrega a fonte do sistema
     unsigned int fonte = C2D2_CarregaFonte("imagens/isabelle64_alpha.png", 64);
     // Carrega o mapa
-    unsigned int mapa = C2D2M_CarregaMapaMappy("fases/Aula04-Mapa.FMP", "fases/Aula04-tileset.png");
+    //unsigned int mapa = C2D2M_CarregaMapaMappy("fases/Aula04-Mapa.FMP", "fases/Aula04-tileset.png");
+    unsigned int mapa = C2D2M_CarregaMapaMappy("fases/atocha.fmp", "fases/tileset.png");
     // D� as velocidades. As duas �ltimas devem ser 1. As demais, incrementa de 1 em 1
     int numcamadas = 4;
-    C2D2M_VelocidadeCamadaMapa(mapa, numcamadas - 1, 1);
-    // Faz um for esot�rico para atribuir as velocidades. Se pra voc� facilitar, use uma camada s� que n�o d� nada
-    for (int i = 0, vel = numcamadas - 1; i < numcamadas - 1; i++, vel--)
-        C2D2M_VelocidadeCamadaMapa(mapa, i, vel);
+    C2D2M_VelocidadeCamadaMapa(mapa, 3, 1);
+    C2D2M_VelocidadeCamadaMapa(mapa, 4, 1);
+    C2D2M_VelocidadeCamadaMapa(mapa, 5, 1);
     // A camada de marcas � sempre a �ltima
-    C2D2M_CamadaMarcas(mapa, 4, 89);
+    C2D2M_CamadaMarcas(mapa, 0, 1);
     // Indica a gravidade a aplicar no mapa
     C2D2M_GravidadeMapa(mapa, GRAVIDADE, MAXGRAVIDADE);
 
@@ -146,7 +146,7 @@ int main(int narg, char **valarg) {
     bool crato = CarregaRato();
     bool cgota = CarregaGota();
     bool ccoruja = JOGO_CarregaCoruja();
-	bool citemMadeira = CarregaItemMadeira();
+    bool citemMadeira = CarregaItemMadeira();
 
     // As m�sicas
     unsigned int musicas[2];
@@ -162,7 +162,7 @@ int main(int narg, char **valarg) {
         C2D2_Encerra();
         return 0;
     }
-    C2D2_TrocaCorLimpezaTela(121, 188, 255);
+    C2D2_TrocaCorLimpezaTela(121, 121, 121);
     C2D2_Botao *teclado = C2D2_PegaTeclas();
     // cria o personagem
     int x = 60, y = 60;
@@ -269,9 +269,9 @@ int main(int narg, char **valarg) {
         }
 
         // Desenha o cen�rio
-        C2D2M_DesenhaCamadaMapa(mapa, 0, 0, ydesl, LARGURA_TELA, ALTURA_TELA);
-        C2D2M_DesenhaCamadaMapa(mapa, 1, 0, ydesl, LARGURA_TELA, ALTURA_TELA);
-        C2D2M_DesenhaCamadaMapa(mapa, 2, 0, ydesl, LARGURA_TELA, ALTURA_TELA);
+        C2D2M_DesenhaCamadaMapa(mapa, 3, 0, ydesl, LARGURA_TELA, ALTURA_TELA);
+        C2D2M_DesenhaCamadaMapa(mapa, 4, 0, ydesl, LARGURA_TELA, ALTURA_TELA);
+        
         // DEsenha os personagens
         ATOR_Desenha(dark, mapa, 0, ydesl);
         for (size_t i = 0; i < inimigos.size(); i++) {
@@ -280,7 +280,8 @@ int main(int narg, char **valarg) {
         }
 
         // Desenha a camada mais superior
-        C2D2M_DesenhaCamadaMapa(mapa, 3, 0, ydesl, LARGURA_TELA, ALTURA_TELA);
+        //C2D2M_DesenhaCamadaMapa(mapa, 3, 0, ydesl, LARGURA_TELA, ALTURA_TELA);
+        C2D2M_DesenhaCamadaMapa(mapa, 5, 0, ydesl, LARGURA_TELA, ALTURA_TELA);
         // DEsenha as mensagens
         if ((dark->estado.estado == ATOXADO_MORRENDO || dark->estado.estado == ATOXADO_MORREU) && dark->vidas > 0)
             C2D2_DesenhaTexto(fonte, LARGURA_TELA / 2, ALTURA_TELA / 2 + ydesl, "Ops!", C2D2_TEXTO_CENTRALIZADO);
@@ -297,7 +298,7 @@ int main(int narg, char **valarg) {
         C2D2_Sincroniza(C2D2_FPS_PADRAO);
         if (teclado[C2D2_ENTER].ativo)
             C2D2_Pausa(50);
-        C2D2M_AnimaMapa(mapa);
+        //C2D2M_AnimaMapa(mapa);
     }
 
     // Apaga os personagens
