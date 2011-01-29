@@ -22,4 +22,7 @@ enum
 
 bool CarregaAtoxado();
 
+int GetEnergiaX(Ator *a);
+int GetEnergiaY(Ator *a);
+
 #endif
