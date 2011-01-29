@@ -8,7 +8,7 @@ enum
 	ANIM_ANDANDO_DIREITA,
 	ANIM_ANDANDO_ESQUERDA,
 	ANIM_MORRENDO
-}
+};
 
 //Animacao 
 Animacao animLobo[] =
