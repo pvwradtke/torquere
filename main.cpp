@@ -100,9 +100,12 @@ int main(int narg, char **valarg) {
     C2D2M_CamadaMarcas(mapa, 4, 89);
     // Indica a gravidade a aplicar no mapa
     C2D2M_GravidadeMapa(mapa, GRAVIDADE, MAXGRAVIDADE);
+
     // Carrega o personagem
     bool cdark = JOGO_CarregaDarkPhoenix();
     bool cbola = JOGO_CarregaBola();
+	bool clobo = CarregaLobo();
+
     // As m�sicas
     unsigned int musicas[2];
     musicas[0] = CA2_CarregaMusica("audio/AulaPaulo_byPiovezan.it");
@@ -154,6 +157,7 @@ int main(int narg, char **valarg) {
     bool primeira = false;
     while (!teclado[C2D2_ESC].pressionado && nafase) {
         C2D2_LimpaTela();
+
         // Testa as colis�es
         if (ATOR_ColidiuBlocoCenario(dark, mapa, C2D2M_MORTE)) {
             ev.tipoEvento = EVT_COLIDIU_ARMADILHA;
@@ -171,6 +175,21 @@ int main(int narg, char **valarg) {
                 primeira = true;
             }
         }
+
+		for(size_t i = 0;i < inimigos.size(); ++i)
+		{
+			if(ATOR_ColidiuBlocoCenario(inimigos[i], mapa, MARCA_FIMDIREITA))
+			{
+				ev.tipoEvento = EVT_COLIDIU_FIM_DIREITA;
+				ATOR_EnviaEvento(inimigos[i], &ev);
+			}
+
+			if(ATOR_ColidiuBlocoCenario(inimigos[i], mapa, MARCA_FIMESQUERDA))
+			{
+				ev.tipoEvento = EVT_COLIDIU_FIM_ESQUERDA;
+				ATOR_EnviaEvento(inimigos[i], &ev);
+			}
+		}
 
         for (size_t i = 0; i < inimigos.size(); i++) {
             if (inimigos[i] != 0)

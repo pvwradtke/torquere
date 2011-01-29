@@ -2,6 +2,7 @@
 #define JOGO_ATORES_H
 
 #include <c2d2/chien2d2mapa.h>
+#include <c2d2/ator.h>
 
 // A enumera��o com o tipo dos personagens
 enum 
@@ -20,16 +21,22 @@ enum
 {
 	MARCA_MADEIRA = C2D2M_PROG,
 	MARCA_GOTEIRA,
-        MARCA_CACHOEIRA,
+    MARCA_CACHOEIRA,
 	MARCA_LOBO,
 	MARCA_RATO,
 	MARCA_CORUJA,
 	MARCA_MORCEGO,
-        MARCA_INIMIGO3,
-        MARCA_FIMDIREITA,
-        MARCA_FIMESQUERDA,
-        MARCA_BOLA_DIREITA,
-        MARCA_BOLA_ESQUERDA
+    MARCA_INIMIGO3,
+    MARCA_FIMDIREITA,
+    MARCA_FIMESQUERDA,
+    MARCA_BOLA_DIREITA,
+    MARCA_BOLA_ESQUERDA
+};
+
+enum 
+{
+	EVT_COLIDIU_FIM_DIREITA = EVT_JOGO_PROG,
+	EVT_COLIDIU_FIM_ESQUERDA
 };
 
 #endif
