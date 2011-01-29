@@ -4,6 +4,8 @@
 #include <c2d2/chien2d2mapa.h>
 #include <c2d2/ator.h>
 
+typedef bool (*acao)(Ator* a, unsigned int mapa, Evento *evt);
+
 // A enumera��o com o tipo dos personagens
 enum 
 { 
@@ -38,7 +40,7 @@ enum
 	EVT_COLIDIU_FIM_DIREITA = EVT_JOGO_PROG,
 	EVT_COLIDIU_FIM_ESQUERDA,
 	EVT_PROXIMO_JOGADOR,
-	EVT_FIM
+	EVT_MAX
 };
 
 #endif
