@@ -7,13 +7,13 @@
 #define VPULO   1000
 
 
-// Enumeração dos estados da atriz do jogo
+// Enumeraï¿½ï¿½o dos estados da atriz do jogo
 enum {BOLA_PULANDO=ATOR_PROG_INI, BOLA_MORRENDO};
 
-// A função que carrega o personagem atriz (pra facilitar).
+// A funï¿½ï¿½o que carrega o personagem atriz (pra facilitar).
 //
 bool JOGO_CarregaBola();
-// A função para fazer a lógica da atriz
+// A funï¿½ï¿½o para fazer a lï¿½gica da atriz
 bool AtualizaBola(Ator *a, unsigned int mapa);
 
 
