@@ -26,7 +26,7 @@ InfoAnimal infoRato = {
 	//tempo bote
 	60,
 	//tempo ataque
-	400
+	100
 };
 
 

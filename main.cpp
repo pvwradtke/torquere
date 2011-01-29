@@ -63,6 +63,11 @@ static void ProcessaControle(Ator *a) {
         ev.tipoEvento = EVT_PRESSIONOU_BOTAO1;
         ATOR_EnviaEvento(a, &ev);
     }
+
+	if ((teclado[C2D2_LCTRL].pressionado) || (joystick && joystick->botoes[C2D2_JBOTAO_1].pressionado)){
+        ev.tipoEvento = EVT_PRESSIONOU_BOTAO2;
+        ATOR_EnviaEvento(a, &ev);
+    }
 }
 
 static void InicializaJoystick()
@@ -103,6 +108,30 @@ static void LiberaInimigos(VectorInimigos *vec)
 	}
 
 	vec->clear();
+}
+
+static void DesenhaTocha(Ator *dark, int mapa, int tocha)
+{
+	// Calcula o centro da tocha, baseado na posição do personagem no mapa
+    int xmapa, ymapa;
+    C2D2M_PosicaoXY(mapa, &xmapa, &ymapa);
+
+	double tamTocha = dark->energia;
+	double tamTochaFixed = dark->energia * 1.05;
+	double tamTochaDiv2 = tamTocha / 2;
+	
+	double xc = (int)(dark->x - xmapa + 0);
+	double yc = (int)(dark->y - ymapa + 16);
+    int xp = (int)(dark->x - xmapa + 0 - tamTochaDiv2);
+    int yp = (int)(dark->y - ymapa + 15 - tamTochaDiv2);
+
+	C2D2_DesenhaSpriteCentro(tocha, 0, xc, ydesl + yc, (int)tamTochaFixed, (int)tamTochaFixed);
+
+	// Desenha as barras pretas da tocha
+    C2D2P_RetanguloPintado(0,ydesl, LARGURA_TELA, ydesl+yp, 0, 0, 0);
+    C2D2P_RetanguloPintado(0,(int)(ydesl+tamTocha+yp), LARGURA_TELA, ydesl+ALTURA_TELA, 0, 0, 0);
+    C2D2P_RetanguloPintado(0,ydesl+yp, xp, (int)(ydesl+yp+tamTocha), 0, 0, 0);
+    C2D2P_RetanguloPintado((int)(xp+tamTocha),ydesl+yp, LARGURA_TELA, (int)(ydesl+yp+tamTocha), 0, 0, 0);		
 }
 
 int main(int narg, char **valarg) {
@@ -216,7 +245,7 @@ int main(int narg, char **valarg) {
 		//
 		//Verifica se existem inimigos proximo do personagem
 		//Em energia armazenamos a "potencia" da tocha
-        double energia2 = dark->energia * dark->energia;
+        double energia2 = (dark->energia * dark->energia) * 0.25;
         for (size_t i = 0; i < inimigos.size(); ++i) {
             if (ATOR_ColidiuBlocoCenario(inimigos[i], mapa, MARCA_FIMDIREITA)) {
                 ev.tipoEvento = EVT_COLIDIU_FIM_DIREITA;
@@ -296,21 +325,9 @@ int main(int narg, char **valarg) {
         if ((dark->estado.estado == ATOXADO_MORRENDO || dark->estado.estado == ATOXADO_MORREU) && dark->vidas == 0)
             C2D2_DesenhaTexto(fonte, LARGURA_TELA / 2, ALTURA_TELA / 2 + ydesl, "Game Over", C2D2_TEXTO_CENTRALIZADO);
         if (dark->estado.estado == ATOXADO_VITORIA)
-            C2D2_DesenhaTexto(fonte, LARGURA_TELA / 2, ALTURA_TELA / 2 + ydesl, "Fase Completa!", C2D2_TEXTO_CENTRALIZADO);
+            C2D2_DesenhaTexto(fonte, LARGURA_TELA / 2, ALTURA_TELA / 2 + ydesl, "Fase Completa!", C2D2_TEXTO_CENTRALIZADO);       
 
-        // Calcula o centro da tocha, baseado na posição do personagem no mapa
-        int xmapa, ymapa;
-        C2D2M_PosicaoXY(mapa, &xmapa, &ymapa);
-        int xp = (int)(dark->x - xmapa + 16 - 256);
-        int yp = (int)(dark->y - ymapa + 15 - 256);
-        // Enfim, desenha a tocha
-        C2D2_DesenhaSprite(tocha, 0, xp, ydesl+yp);
-
-        // Desenha as barras pretas da tocha
-        C2D2P_RetanguloPintado(0,ydesl, LARGURA_TELA, ydesl+yp, 0, 0, 0);
-        C2D2P_RetanguloPintado(0,ydesl+512+yp, LARGURA_TELA, ydesl+ALTURA_TELA, 0, 0, 0);
-        C2D2P_RetanguloPintado(0,ydesl+yp, xp, ydesl+yp+512, 0, 0, 0);
-        C2D2P_RetanguloPintado(xp+512,ydesl+yp, LARGURA_TELA, ydesl+yp+512, 0, 0, 0);
+		DesenhaTocha(dark, mapa, tocha);        
 
         // Desenha as barras pretas do wide em 4:3 se necessário
         if (ydesl) {
