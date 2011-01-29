@@ -185,6 +185,14 @@
 			>
 		</File>
 		<File
+			RelativePath="..\gota.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\gota.h"
+			>
+		</File>
+		<File
 			RelativePath="..\goteira.cpp"
 			>
 		</File>

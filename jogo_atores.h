@@ -15,7 +15,8 @@ enum
 	LOBO,
 	RATO,
 	CORUJA,
-	MORCEGO
+	MORCEGO,	
+	GOTA
 };
 
 // A enumera��o das marcas
@@ -23,7 +24,7 @@ enum
 enum 
 {
 	MARCA_MADEIRA = C2D2M_PROG,
-	MARCA_GOTEIRA,
+	MARCA_GOTA,
     MARCA_CACHOEIRA,
 	MARCA_LOBO,
 	MARCA_RATO,
@@ -33,7 +34,7 @@ enum
     MARCA_FIMDIREITA,
     MARCA_FIMESQUERDA,
     MARCA_BOLA_DIREITA,
-    MARCA_BOLA_ESQUERDA
+    MARCA_BOLA_ESQUERDA,	
 };
 
 enum 

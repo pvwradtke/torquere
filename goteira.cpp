@@ -72,6 +72,7 @@ static bool AtualizaGoteira(Ator *a, unsigned int mapa)
 				{
 					case EVT_TEMPO:
 						a->temporizadores[0] = INTERVALO_REGULAR;
+						ATOR_CriaAtor(GOTA, a->x, a->y, 0);
 						break;
 				}
 			}

@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdio.h>
 #include <vector>
 
@@ -12,7 +13,7 @@
 #include "jogo_bola.h"
 #include "lobo.h"
 #include "rato.h"
-#include "goteira.h"
+#include "gota.h"
 #include "jogo_coruja.h"
 
 // As dimens�es da tela desejada (cheia)
@@ -24,6 +25,8 @@
 
 // Variável que indica o deslocamento da tela, para caso de 4:3
 int ydesl = 0;
+
+typedef std::vector<Ator *> VectorInimigos;
 
 void ProcessaControle(Ator *a);
 
@@ -74,6 +77,32 @@ static double subPow2(double a, double b)
 	return (a - b) * (a - b);
 }
 
+static void CriaInimigo(VectorInimigos *vec, int tipoMarca, int tipoAtor, int mapa)
+{
+	int x, y;
+	if (C2D2M_PrimeiroBlocoMarca(mapa, tipoMarca, &x, &y)) {
+        vec->push_back(ATOR_CriaAtor(tipoAtor, x, y, 0));
+
+		assert(vec->back());
+
+        while (C2D2M_ProximoBlocoMarca(mapa, &x, &y))
+		{
+            vec->push_back(ATOR_CriaAtor(tipoAtor, x, y, 0));
+			assert(vec->back());
+		}
+    }
+}
+
+static void LiberaInimigos(VectorInimigos *vec)
+{
+	for(size_t i = 0;i < vec->size(); ++i)
+	{
+		free((*vec)[i]);
+	}
+
+	vec->clear();
+}
+
 int main(int narg, char **valarg) {
     // Inicia a Chien2D 2 e testa se deu tudo certo
     int altura = ALTURA_TELA;
@@ -114,7 +143,7 @@ int main(int narg, char **valarg) {
     bool cbola = JOGO_CarregaBola();
     bool clobo = CarregaLobo();
     bool crato = CarregaRato();
-    bool cgoteira = CarregaGoteira();
+    bool cgota = CarregaGota();
     bool ccoruja = JOGO_CarregaCoruja();
 
     // As m�sicas
@@ -141,39 +170,13 @@ int main(int narg, char **valarg) {
     Evento ev;
     bool nafase = true;
 
-    std::vector<Ator *> inimigos;
-    if (C2D2M_PrimeiroBlocoMarca(mapa, MARCA_LOBO, &x, &y)) {
-        inimigos.push_back(ATOR_CriaAtor(LOBO, x, y, 0));
+    VectorInimigos inimigos;	
 
-        while (C2D2M_ProximoBlocoMarca(mapa, &x, &y))
-            inimigos.push_back(ATOR_CriaAtor(LOBO, x, y, 0));
-    }
+	CriaInimigo(&inimigos, MARCA_LOBO, LOBO, mapa);    
+	CriaInimigo(&inimigos, MARCA_RATO, RATO, mapa);
+	CriaInimigo(&inimigos, MARCA_CORUJA, CORUJA, mapa);	
 
-    if (C2D2M_PrimeiroBlocoMarca(mapa, MARCA_RATO, &x, &y)) {
-        inimigos.push_back(ATOR_CriaAtor(RATO, x, y, 0));
-
-        while (C2D2M_ProximoBlocoMarca(mapa, &x, &y))
-            inimigos.push_back(ATOR_CriaAtor(RATO, x, y, 0));
-    }
-
-    if (C2D2M_PrimeiroBlocoMarca(mapa, MARCA_CORUJA, &x, &y)) {
-        inimigos.push_back(ATOR_CriaAtor(CORUJA, x, y, 0));
-
-        while (C2D2M_ProximoBlocoMarca(mapa, &x, &y))
-            inimigos.push_back(ATOR_CriaAtor(CORUJA, x, y, 0));
-    }
-
-
-    if (C2D2M_PrimeiroBlocoMarca(mapa, MARCA_BOLA_DIREITA, &x, &y)) {
-        inimigos.push_back(ATOR_CriaAtor(BOLA, x, y, 0));
-        while (C2D2M_ProximoBlocoMarca(mapa, &x, &y))
-            inimigos.push_back(ATOR_CriaAtor(BOLA, x, y, 0));
-    }
-    if (C2D2M_PrimeiroBlocoMarca(mapa, MARCA_BOLA_ESQUERDA, &x, &y)) {
-        inimigos.push_back(ATOR_CriaAtor(BOLA, x, y, 180));
-        while (C2D2M_ProximoBlocoMarca(mapa, &x, &y))
-            inimigos.push_back(ATOR_CriaAtor(BOLA, x, y, 180));
-    }
+	CriaInimigo(&inimigos, MARCA_GOTA, GOTA, mapa);
 
     // Coloca a m�sica para tocar
     CA2_TocaMusica(musicas[0], -1);
@@ -200,6 +203,10 @@ int main(int narg, char **valarg) {
             }
         }
 
+		//
+		//
+		//Verifica se existem inimigos proximo do personagem
+		//Em energia armazenamos a "potencia" da tocha
         double energia2 = dark->energia * dark->energia;
         for (size_t i = 0; i < inimigos.size(); ++i) {
             if (ATOR_ColidiuBlocoCenario(inimigos[i], mapa, MARCA_FIMDIREITA)) {
@@ -247,7 +254,6 @@ int main(int narg, char **valarg) {
             }
         }
 
-
         // Centraliza o mapa no personagem principal
         ATOR_CentraMapa(dark, mapa, LARGURA_TELA, ALTURA_TELA);
         // Roda os eventos do jogo
@@ -293,9 +299,7 @@ int main(int narg, char **valarg) {
 
     // Apaga os personagens
     free(dark);
-    for (size_t i = 0; i < inimigos.size(); i++) {
-        free(inimigos[i]);
-    }
+	LiberaInimigos(&inimigos);	
 
     // Descarrega o personagem
     ATOR_DescarregaAtor(ATOXADO);
