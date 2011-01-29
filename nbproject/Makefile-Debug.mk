@@ -34,6 +34,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/item_madeira.o \
 	${OBJECTDIR}/jogo_bola.o \
 	${OBJECTDIR}/lobo.o \
+	${OBJECTDIR}/jogo_morcego.o \
 	${OBJECTDIR}/gota.o \
 	${OBJECTDIR}/main.o \
 	${OBJECTDIR}/jogo_coruja.o \
@@ -79,6 +80,11 @@ ${OBJECTDIR}/lobo.o: nbproject/Makefile-${CND_CONF}.mk lobo.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/lobo.o lobo.cpp
+
+${OBJECTDIR}/jogo_morcego.o: nbproject/Makefile-${CND_CONF}.mk jogo_morcego.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/jogo_morcego.o jogo_morcego.cpp
 
 ${OBJECTDIR}/gota.o: nbproject/Makefile-${CND_CONF}.mk gota.cpp 
 	${MKDIR} -p ${OBJECTDIR}
