@@ -48,7 +48,10 @@ enum
 enum CamposAuxiliaresInt
 {
 	INT_RESETA_TOCHA = 0,
-	INT_OSCILACAO_TOCHA = 1
+	INT_OSCILACAO_TOCHA = 1,
+	INT_BOOST_TOCHA = 2,
+	INT_TEMPO_BOOST = 3,
+	INT_SINAL_BOOST = 4
 };
 
 enum CamposAuxiliaresReal
@@ -57,6 +60,25 @@ enum CamposAuxiliaresReal
 	REAL_Y,
 	REAL_ENERGIA_TOCHA
 };
+
+//Tempo entre cada update da tocha
+#define TEMPO_TOCHA 2
+
+//Energia minima da tocha, abaixo disso morte
+#define ENERGIA_MINIMA 164
+
+//Energia inicial da tocha
+#define ENERGIA_INICIAL 512
+
+//Valor maximo que a tocha oscila para dar o efeito visual
+#define OSCILACAO_MAX 30
+
+//Quanto que a gota prejudica a tocha
+#define DANO_GOTA 70
+
+#define EFEITO_GOTA_TOCHA 250
+
+#define PASSO_OSCILACAO_GOTA 6
 
 static bool AtualizaAtoxado(Ator *a, unsigned int mapa);
 
@@ -92,6 +114,10 @@ static void AtualizaColisaoAtor(Ator *a, Evento *ev, unsigned int mapa)
 					break;
 
 				case GOTA:
+					a->aux_int[INT_BOOST_TOCHA] = EFEITO_GOTA_TOCHA;
+					a->aux_int[INT_TEMPO_BOOST] = PASSO_OSCILACAO_GOTA;
+					a->aux_int[INT_SINAL_BOOST] = -1;
+					a->aux_real[REAL_ENERGIA_TOCHA] -= DANO_GOTA * ((rand() % 100) / 150.0f);
 					break;
 
 				default:
@@ -153,11 +179,7 @@ static void AtualizaVoo(Ator *a, Evento *ev, unsigned int mapa)
 	}
 }
 
-#define TEMPO_TOCHA 2
 
-#define ENERGIA_MINIMA 164
-#define ENERGIA_INICIAL 512
-#define OSCILACAO_MAX 30
 
 static void AtualizaTocha(Ator *a, Evento *ev, unsigned int mapa)
 {
@@ -170,6 +192,13 @@ static void AtualizaTocha(Ator *a, Evento *ev, unsigned int mapa)
 			a->temporizadores[TEMPORIZADOR_TOCHA] = TEMPO_TOCHA;
 			a->aux_real[REAL_ENERGIA_TOCHA] -= 0.1f;	
 			a->energia = (int)(a->aux_real[REAL_ENERGIA_TOCHA] + (rand() % OSCILACAO_MAX));
+			a->energia += a->aux_int[INT_BOOST_TOCHA] * a->aux_int[INT_SINAL_BOOST];
+			if(a->energia <= ENERGIA_MINIMA)
+				a->energia = ENERGIA_MINIMA;
+
+			a->aux_int[INT_BOOST_TOCHA] -= a->aux_int[INT_TEMPO_BOOST];
+			if(a->aux_int[INT_BOOST_TOCHA] < 0)
+				a->aux_int[INT_BOOST_TOCHA] = 0;
 
 			if(a->aux_real[REAL_ENERGIA_TOCHA] <= ENERGIA_MINIMA)
 			{				
