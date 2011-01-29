@@ -18,7 +18,13 @@ Animacao animLobo[] =
 
 InfoAnimal infoLobo = {
 	//velocidade
-	2
+	2,
+	//velocidade ataque
+	10,
+	//tempo Bote
+	50,
+	//tempo ataque
+	20
 };
 
 static bool AtualizaLobo(Ator *a, unsigned int mapa);

@@ -4,6 +4,22 @@
 
 #include "jogo_atores.h"
 
+static void AtualizaDirecao(Ator *a, Evento *ev, unsigned int mapa, int proximoEstado)
+{
+	switch(ev->tipoEvento)
+	{
+		case EVT_COLIDIU_FIM_DIREITA:
+			a->direcao=180;
+			ATOR_TrocaEstado(a, ANIMAL_ANDANDO, false);
+			break;
+
+		case EVT_COLIDIU_FIM_ESQUERDA:
+			a->direcao=0;
+			ATOR_TrocaEstado(a, ANIMAL_ANDANDO, false);
+			break;					
+	}
+}
+
 bool AtualizaAnimal(Ator *a, InfoAnimal *info, unsigned int mapa)
 {
 	Evento ev;
@@ -42,20 +58,18 @@ bool AtualizaAnimal(Ator *a, InfoAnimal *info, unsigned int mapa)
 
 					case EVT_SAIU_FORA_MAPA:
 						ATOR_TrocaEstado(a, ATOR_ENCERRADO, false);
-						break;
-
-					case EVT_COLIDIU_FIM_DIREITA:
-						a->direcao=180;
-						ATOR_TrocaEstado(a, ANIMAL_ANDANDO, false);
-						break;
-
-					case EVT_COLIDIU_FIM_ESQUERDA:
-						a->direcao=0;
-						ATOR_TrocaEstado(a, ANIMAL_ANDANDO, false);
 						break;					
 
 					case EVT_COLIDIU_PERSONAGEM:
 						ATOR_TrocaEstado(a, ANIMAL_ANDANDO, false);
+						break;
+
+					case EVT_PROXIMO_JOGADOR:
+						ATOR_TrocaEstado(a, ANIMAL_PREPARA_ATAQUE, false);
+						break;
+
+					default:
+						AtualizaDirecao(a, &ev, mapa, ANIMAL_ANDANDO);
 						break;
 				}
 			}
@@ -82,7 +96,52 @@ bool AtualizaAnimal(Ator *a, InfoAnimal *info, unsigned int mapa)
 				}
 				break;
 			case ATOR_ENCERRADO:
-				return false;
+				return false;		
+
+			case ANIMAL_PREPARA_ATAQUE:
+				if(a->estado.subestado==ESTADO_INICIO)
+				{
+					a->velocidade=0;
+					a->estado.subestado=ESTADO_RODANDO;
+					a->temporizadores[0] = info->tempoBote;
+				}
+
+				while(ATOR_ProximoEvento(a, &ev))
+				{
+					switch(ev.tipoEvento)
+					{						
+						case EVT_TEMPO:
+						if(ev.subtipo==0)
+							ATOR_TrocaEstado(a, ANIMAL_ATACANDO, false);
+						break;						
+					}
+				}
+				break;
+
+			case ANIMAL_ATACANDO:
+				if(a->estado.subestado==ESTADO_INICIO)
+				{
+					printf("Iniciei o ataque\n");
+					a->velocidade=info->velocidadeAtaque;
+					a->estado.subestado=ESTADO_RODANDO;
+					a->temporizadores[0] = info->tempoAtaque;
+				}
+
+				while(ATOR_ProximoEvento(a, &ev))
+				{
+					switch(ev.tipoEvento)
+					{						
+						case EVT_TEMPO:
+						if(ev.subtipo==0)
+							ATOR_TrocaEstado(a, ANIMAL_ANDANDO, false);
+						break;		
+
+						default:
+							AtualizaDirecao(a, &ev, mapa, ANIMAL_ATACANDO);
+							break;
+					}
+				}
+				break;
 	}
 
 	return true;

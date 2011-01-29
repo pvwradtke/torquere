@@ -19,7 +19,14 @@ Animacao animRato[] ={
 };
 
 InfoAnimal infoRato = {
-	1
+	//velocidade
+	1,
+	//velocidade ataque
+	8,
+	//tempo bote
+	60,
+	//tempo ataque
+	40
 };
 
 
