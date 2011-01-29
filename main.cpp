@@ -139,7 +139,6 @@ int main(int narg, char **valarg) {
     bool nafase = true;
 
     std::vector<Ator *> inimigos;
-
     if (C2D2M_PrimeiroBlocoMarca(mapa, MARCA_LOBO, &x, &y)) {
         inimigos.push_back(ATOR_CriaAtor(LOBO, x, y, 0));
 
