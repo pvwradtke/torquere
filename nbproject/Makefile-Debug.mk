@@ -31,10 +31,13 @@ OBJECTDIR=build/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
-	${OBJECTDIR}/jogo_coruja.o \
-	${OBJECTDIR}/jogo_darkphoenix.o \
 	${OBJECTDIR}/jogo_bola.o \
-	${OBJECTDIR}/main.o
+	${OBJECTDIR}/lobo.o \
+	${OBJECTDIR}/main.o \
+	${OBJECTDIR}/jogo_coruja.o \
+	${OBJECTDIR}/rato.o \
+	${OBJECTDIR}/animal.o \
+	${OBJECTDIR}/atoxado.o
 
 # C Compiler Flags
 CFLAGS=
@@ -60,25 +63,40 @@ dist/Debug/GNU-Linux-x86/torquere: ${OBJECTFILES}
 	${MKDIR} -p dist/Debug/GNU-Linux-x86
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/torquere ${OBJECTFILES} ${LDLIBSOPTIONS} 
 
-${OBJECTDIR}/jogo_coruja.o: nbproject/Makefile-${CND_CONF}.mk jogo_coruja.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/jogo_coruja.o jogo_coruja.cpp
-
-${OBJECTDIR}/jogo_darkphoenix.o: nbproject/Makefile-${CND_CONF}.mk jogo_darkphoenix.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/jogo_darkphoenix.o jogo_darkphoenix.cpp
-
 ${OBJECTDIR}/jogo_bola.o: nbproject/Makefile-${CND_CONF}.mk jogo_bola.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/jogo_bola.o jogo_bola.cpp
 
+${OBJECTDIR}/lobo.o: nbproject/Makefile-${CND_CONF}.mk lobo.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/lobo.o lobo.cpp
+
 ${OBJECTDIR}/main.o: nbproject/Makefile-${CND_CONF}.mk main.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
+
+${OBJECTDIR}/jogo_coruja.o: nbproject/Makefile-${CND_CONF}.mk jogo_coruja.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/jogo_coruja.o jogo_coruja.cpp
+
+${OBJECTDIR}/rato.o: nbproject/Makefile-${CND_CONF}.mk rato.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/rato.o rato.cpp
+
+${OBJECTDIR}/animal.o: nbproject/Makefile-${CND_CONF}.mk animal.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/animal.o animal.cpp
+
+${OBJECTDIR}/atoxado.o: nbproject/Makefile-${CND_CONF}.mk atoxado.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/atoxado.o atoxado.cpp
 
 # Subprojects
 .build-subprojects:

@@ -12,6 +12,7 @@
 #include "jogo_bola.h"
 #include "lobo.h"
 #include "rato.h"
+#include "jogo_coruja.h"
 
 // As dimens�es da tela desejada (cheia)
 #define LARGURA_TELA	1024
@@ -67,17 +68,16 @@ void ProcessaControle(Ator *a) {
     }
 }
 
-static double subPow2(double a, double b)
-{
-	return (a - b) * (a - b);
+static double subPow2(double a, double b) {
+    return (a - b) * (a - b);
 }
 
 int main(int narg, char **valarg) {
     // Inicia a Chien2D 2 e testa se deu tudo certo
     int altura = ALTURA_TELA;
-    if(ydesl)
+    if (ydesl)
         altura = ALTURA_TELA2;
-    if (C2D2_Inicia(LARGURA_TELA, ydesl==0?ALTURA_TELA:ALTURA_TELA2, C2D2_JANELA, C2D2_DESENHO_OPENGL, "Darkphoenix - O Baixinho Invocado"))
+    if (C2D2_Inicia(LARGURA_TELA, ydesl == 0 ? ALTURA_TELA : ALTURA_TELA2, C2D2_JANELA, C2D2_DESENHO_OPENGL, "Darkphoenix - O Baixinho Invocado"))
         printf("Iniciou a Chien2D 2 com sucesso\n");
     else {
         printf("Falhou ao iniciar a Chien2D 2. Encerrando o programa.\n");
@@ -110,15 +110,16 @@ int main(int narg, char **valarg) {
     // Carrega o personagem
     bool cdark = CarregaAtoxado();
     bool cbola = JOGO_CarregaBola();
-	bool clobo = CarregaLobo();
-	bool crato = CarregaRato();
+    bool clobo = CarregaLobo();
+    bool crato = CarregaRato();
+    bool ccoruja = JOGO_CarregaCoruja();
 
     // As m�sicas
     unsigned int musicas[2];
     musicas[0] = CA2_CarregaMusica("audio/AulaPaulo_byPiovezan.it");
     musicas[1] = CA2_CarregaMusica("audio/venceu.wav");
     // Testa se carregou certo (se � diferente de 0)
-    if (fonte == 0 || mapa == 0 || !cdark || !cbola) {
+    if (fonte == 0 || mapa == 0 || !cdark || !cbola || !ccoruja) {
         printf("Falhou ao carregar alguma coisa. Encerrando.\n");
         // Encerra a Chien2d2
         CA2_Encerra();
@@ -139,21 +140,27 @@ int main(int narg, char **valarg) {
 
     std::vector<Ator *> inimigos;
 
-	if (C2D2M_PrimeiroBlocoMarca(mapa, MARCA_LOBO, &x, &y)) 
-	{
+    if (C2D2M_PrimeiroBlocoMarca(mapa, MARCA_LOBO, &x, &y)) {
         inimigos.push_back(ATOR_CriaAtor(LOBO, x, y, 0));
 
         while (C2D2M_ProximoBlocoMarca(mapa, &x, &y))
             inimigos.push_back(ATOR_CriaAtor(LOBO, x, y, 0));
     }
 
-	if (C2D2M_PrimeiroBlocoMarca(mapa, MARCA_RATO, &x, &y)) 
-	{
+    if (C2D2M_PrimeiroBlocoMarca(mapa, MARCA_RATO, &x, &y)) {
         inimigos.push_back(ATOR_CriaAtor(RATO, x, y, 0));
 
         while (C2D2M_ProximoBlocoMarca(mapa, &x, &y))
             inimigos.push_back(ATOR_CriaAtor(RATO, x, y, 0));
     }
+
+    if (C2D2M_PrimeiroBlocoMarca(mapa, MARCA_CORUJA, &x, &y)) {
+        inimigos.push_back(ATOR_CriaAtor(CORUJA, x, y, 0));
+
+        while (C2D2M_ProximoBlocoMarca(mapa, &x, &y))
+            inimigos.push_back(ATOR_CriaAtor(CORUJA, x, y, 0));
+    }
+
 
     if (C2D2M_PrimeiroBlocoMarca(mapa, MARCA_BOLA_DIREITA, &x, &y)) {
         inimigos.push_back(ATOR_CriaAtor(BOLA, x, y, 0));
@@ -191,31 +198,26 @@ int main(int narg, char **valarg) {
             }
         }
 
-		double energia2 = dark->energia * dark->energia;
-		for(size_t i = 0;i < inimigos.size(); ++i)
-		{
-			if(ATOR_ColidiuBlocoCenario(inimigos[i], mapa, MARCA_FIMDIREITA))
-			{
-				ev.tipoEvento = EVT_COLIDIU_FIM_DIREITA;
-				ATOR_EnviaEvento(inimigos[i], &ev);
-			}
+        double energia2 = dark->energia * dark->energia;
+        for (size_t i = 0; i < inimigos.size(); ++i) {
+            if (ATOR_ColidiuBlocoCenario(inimigos[i], mapa, MARCA_FIMDIREITA)) {
+                ev.tipoEvento = EVT_COLIDIU_FIM_DIREITA;
+                ATOR_EnviaEvento(inimigos[i], &ev);
+            }
 
-			if(ATOR_ColidiuBlocoCenario(inimigos[i], mapa, MARCA_FIMESQUERDA))
-			{
-				ev.tipoEvento = EVT_COLIDIU_FIM_ESQUERDA;
-				ATOR_EnviaEvento(inimigos[i], &ev);
-			}
+            if (ATOR_ColidiuBlocoCenario(inimigos[i], mapa, MARCA_FIMESQUERDA)) {
+                ev.tipoEvento = EVT_COLIDIU_FIM_ESQUERDA;
+                ATOR_EnviaEvento(inimigos[i], &ev);
+            }
 
-			if(dark->direcao != inimigos[i]->direcao)
-			{
-				double distancia = subPow2(inimigos[i]->x, dark->x) + subPow2(inimigos[i]->y, dark->y);
-				if(distancia < energia2)
-				{
-					ev.tipoEvento = EVT_PROXIMO_JOGADOR;
-					ATOR_EnviaEvento(inimigos[i], &ev);
-				}
-			}
-		}
+            if (dark->direcao != inimigos[i]->direcao) {
+                double distancia = subPow2(inimigos[i]->x, dark->x) + subPow2(inimigos[i]->y, dark->y);
+                if (distancia < energia2) {
+                    ev.tipoEvento = EVT_PROXIMO_JOGADOR;
+                    ATOR_EnviaEvento(inimigos[i], &ev);
+                }
+            }
+        }
 
         for (size_t i = 0; i < inimigos.size(); i++) {
             if (inimigos[i] != 0)
