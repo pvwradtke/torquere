@@ -3,6 +3,12 @@
 #include "jogo_atores.h"
 #include "lobo.h"
 
+enum
+{
+	ANIM_ANDANDO_DIREITA,
+	ANIM_ANDANDO_ESQUERDA,
+	ANIM_MORRENDO
+}
 
 //Animacao 
 Animacao animLobo[] =
@@ -53,12 +59,11 @@ bool AtualizaLobo(Ator *a, unsigned int mapa)
 				a->estado.subestado=ESTADO_RODANDO;
 
 				if(a->direcao==0)
-					ATOR_TrocaAnimacao(a, 1);
+					ATOR_TrocaAnimacao(a, ANIM_ANDANDO_ESQUERDA);
 				else
-					ATOR_TrocaAnimacao(a, 0);
+					ATOR_TrocaAnimacao(a, ANIM_ANDANDO_DIREITA);
 
-				a->aux_int[0]=3;
-				//ATOR_Impulsiona(a, 300);
+				a->aux_int[0]=30;
 			}
 
 			while(ATOR_ProximoEvento(a, &ev))
@@ -77,24 +82,15 @@ bool AtualizaLobo(Ator *a, unsigned int mapa)
 						ATOR_TrocaEstado(a, ATOR_ENCERRADO, false);
 						break;
 
-					case EVT_COLIDIU_PAREDE:
-						if(ev.subtipo==SUBEVT_COLIDIU_PAREDE_BAIXO)
-						{	
-							if(--a->aux_int[0] == 0)
-							{
-								if(a->direcao==0)
-									a->direcao=180;
-								else
-									a->direcao=0;
-								ATOR_TrocaEstado(a, LOBO_ANDANDO, false);
-							}
-							else
-								ATOR_Impulsiona(a, 300);
-							
-						}
-						else if(ev.subtipo!=SUBEVT_COLIDIU_PAREDE_CIMA)
-							ATOR_TrocaEstado(a, LOBO_ANDANDO, false);
+					case EVT_COLIDIU_FIM_DIREITA:
+						a->direcao=180;
+						ATOR_TrocaEstado(a, LOBO_ANDANDO, false);
 						break;
+
+					case EVT_COLIDIU_FIM_ESQUERDA:
+						a->direcao=0;
+						ATOR_TrocaEstado(a, LOBO_ANDANDO, false);
+						break;					
 
 					case EVT_COLIDIU_PERSONAGEM:
 						ATOR_TrocaEstado(a, LOBO_ANDANDO, false);
@@ -102,14 +98,16 @@ bool AtualizaLobo(Ator *a, unsigned int mapa)
 				}
 			}
 			break;
+
 			case LOBO_MORRENDO:
 				if(a->estado.subestado == ESTADO_INICIO)
 				{
-					ATOR_TrocaAnimacao(a, 2);
+					ATOR_TrocaAnimacao(a, ANIM_MORRENDO);
 					a->velocidade=0;
 					a->temporizadores[0] = 60;
 					a->estado.subestado = ESTADO_RODANDO;
 				}
+
 				while(ATOR_ProximoEvento(a, &ev))
 				{
 					switch(ev.tipoEvento)
