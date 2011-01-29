@@ -63,6 +63,11 @@ static void ProcessaControle(Ator *a) {
         ev.tipoEvento = EVT_PRESSIONOU_BOTAO1;
         ATOR_EnviaEvento(a, &ev);
     }
+
+	if ((teclado[C2D2_LCTRL].pressionado) || (joystick && joystick->botoes[C2D2_JBOTAO_1].pressionado)){
+        ev.tipoEvento = EVT_PRESSIONOU_BOTAO2;
+        ATOR_EnviaEvento(a, &ev);
+    }
 }
 
 static void InicializaJoystick()
@@ -115,20 +120,11 @@ static void DesenhaTocha(Ator *dark, int mapa, int tocha)
 	double tamTochaFixed = dark->energia * 1.05;
 	double tamTochaDiv2 = tamTocha / 2;
 	
-	double xc = (int)(dark->x - xmapa + 16);
+	double xc = (int)(dark->x - xmapa + 0);
 	double yc = (int)(dark->y - ymapa + 16);
-    int xp = (int)(dark->x - xmapa + 16 - tamTochaDiv2);
+    int xp = (int)(dark->x - xmapa + 0 - tamTochaDiv2);
     int yp = (int)(dark->y - ymapa + 15 - tamTochaDiv2);
-    /*
-	int x[4];
-	int y[4];
 
-	x[0] = x[3] = xp;
-	x[1] = x[2] = xp + 512;
-	y[0] = y[1] = ydesl+yp;
-	y[2] = y[3] = ydesl+yp + 512;*/
-
-	//C2D2_DesenhaSpriteEfeito(tocha, 0, x, y, 255, 255, 255, 255);
 	C2D2_DesenhaSpriteCentro(tocha, 0, xc, ydesl + yc, (int)tamTochaFixed, (int)tamTochaFixed);
 
 	// Desenha as barras pretas da tocha
