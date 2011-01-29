@@ -10,6 +10,7 @@
 #include "jogo_atores.h"
 #include "jogo_darkphoenix.h"
 #include "jogo_bola.h"
+#include "lobo.h"
 
 // As dimens�es da tela desejada (cheia)
 #define LARGURA_TELA	1024
@@ -127,6 +128,15 @@ int main(int narg, char **valarg) {
     bool nafase = true;
 
     std::vector<Ator *> inimigos;
+
+	if (C2D2M_PrimeiroBlocoMarca(mapa, MARCA_LOBO, &x, &y)) 
+	{
+        inimigos.push_back(ATOR_CriaAtor(LOBO, x, y, 0));
+
+        while (C2D2M_ProximoBlocoMarca(mapa, &x, &y))
+            inimigos.push_back(ATOR_CriaAtor(LOBO, x, y, 0));
+    }
+
     if (C2D2M_PrimeiroBlocoMarca(mapa, MARCA_BOLA_DIREITA, &x, &y)) {
         inimigos.push_back(ATOR_CriaAtor(BOLA, x, y, 0));
         while (C2D2M_ProximoBlocoMarca(mapa, &x, &y))
