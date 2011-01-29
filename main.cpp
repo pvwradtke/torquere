@@ -126,6 +126,8 @@ int main(int narg, char **valarg) {
     ATOR_Inicia();
     // Carrega a fonte do sistema
     unsigned int fonte = C2D2_CarregaFonte("imagens/isabelle64_alpha.png", 64);
+    // Carrega a tocha
+    unsigned int tocha = C2D2_CarregaSpriteSet("./imagens/mask.png", 512, 512);
     // Carrega o mapa
     //unsigned int mapa = C2D2M_CarregaMapaMappy("fases/Aula04-Mapa.FMP", "fases/Aula04-tileset.png");
     unsigned int mapa = C2D2M_CarregaMapaMappy("fases/atocha.fmp", "fases/tileset.png");
@@ -162,7 +164,7 @@ int main(int narg, char **valarg) {
         C2D2_Encerra();
         return 0;
     }
-    C2D2_TrocaCorLimpezaTela(121, 121, 121);
+    C2D2_TrocaCorLimpezaTela(24, 24, 24);
     C2D2_Botao *teclado = C2D2_PegaTeclas();
     // cria o personagem
     int x = 60, y = 60;
@@ -295,6 +297,14 @@ int main(int narg, char **valarg) {
             C2D2P_RetanguloPintado(0, 0, LARGURA_TELA, ydesl, 0, 0, 0);
             C2D2P_RetanguloPintado(0, ydesl + ALTURA_TELA, LARGURA_TELA, 2 * ydesl + ALTURA_TELA, 0, 0, 0);
         }
+        // Enfim, desenha a tocha
+        C2D2_DesenhaSprite(tocha, 0, 256, ydesl+44);
+        // Desenha as barras pretas
+        C2D2P_RetanguloPintado(0,ydesl, LARGURA_TELA, ydesl+44, 0, 0, 0);
+        C2D2P_RetanguloPintado(0,ydesl+556, LARGURA_TELA, ydesl+ALTURA_TELA, 0, 0, 0);
+        C2D2P_RetanguloPintado(0,ydesl+44, 256, ydesl+556, 0, 0, 0);
+        C2D2P_RetanguloPintado(768,ydesl+44, LARGURA_TELA, ydesl+556, 0, 0, 0);
+
         C2D2_Sincroniza(C2D2_FPS_PADRAO);
         if (teclado[C2D2_ENTER].ativo)
             C2D2_Pausa(50);
