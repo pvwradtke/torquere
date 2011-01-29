@@ -125,7 +125,7 @@ static bool AtualizaAtoxado(Ator *a, unsigned int mapa)
 		// Muda para o estado adequado
 		ATOR_TrocaEstado(a, ATOXADO_INICIO, false);
 		a->vidas=3;
-		a->energia = 300;
+		a->energia = 128;
 		break;
 
 	case ATOXADO_INICIO:
