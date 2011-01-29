@@ -62,8 +62,8 @@ static bool AtualizaGota(Ator *a, unsigned int mapa)
 		case ATOR_NASCENDO:
 			// Muda para o estado adequado			
 			a->gravidade = false;
-			a->aux_int[0] = a->x;
-			a->aux_int[1] = a->y;
+			a->aux_real[0] = a->x;
+			a->aux_real[1] = a->y;
 			ATOR_TrocaEstado(a, GOTA_ESCONDIDA, false);
 			break;
 
@@ -118,8 +118,8 @@ static bool AtualizaGota(Ator *a, unsigned int mapa)
 					case EVT_COLIDIU_PAREDE:	
 					case EVT_COLIDIU_PERSONAGEM:
 						a->gravidade = 0;
-						a->x = a->aux_int[0];
-						a->y = a->aux_int[1];
+						a->x = a->aux_real[0];
+						a->y = a->aux_real[1];
 						ATOR_TrocaEstado(a, GOTA_ESCONDIDA, false);
 						break;
 				}

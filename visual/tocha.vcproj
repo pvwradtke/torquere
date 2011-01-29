@@ -193,14 +193,6 @@
 			>
 		</File>
 		<File
-			RelativePath="..\goteira.cpp"
-			>
-		</File>
-		<File
-			RelativePath="..\goteira.h"
-			>
-		</File>
-		<File
 			RelativePath="..\jogo_atores.h"
 			>
 		</File>
