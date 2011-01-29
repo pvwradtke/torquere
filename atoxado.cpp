@@ -60,6 +60,27 @@ bool CarregaAtoxado()
 	);
 }
 
+static void AtualizaColisaoAtor(Ator *a, Evento *ev, unsigned int mapa)
+{
+	switch(ev->tipoEvento)
+	{
+		case EVT_COLIDIU_PERSONAGEM:
+			switch(ev->subtipo)
+			{
+				case ITEM_MADEIRA:
+					break;
+
+				case GOTA:
+					break;
+
+				default:
+					ATOR_TrocaEstado(a, ATOXADO_MORRENDO, false);
+					break;
+			}			
+			break;
+	}
+}
+
 static void AtualizaVoo(Ator *a, Evento *ev, unsigned int mapa)
 {
 	switch(ev->tipoEvento)
@@ -105,8 +126,8 @@ static void AtualizaVoo(Ator *a, Evento *ev, unsigned int mapa)
 			ATOR_TrocaEstado(a, ATOXADO_VITORIA, false);
 			break;
 
-		case EVT_COLIDIU_PERSONAGEM:
-			ATOR_TrocaEstado(a, ATOXADO_MORRENDO, false);
+		default:
+			AtualizaColisaoAtor(a, ev, mapa);
 			break;
 	}
 }
@@ -176,8 +197,9 @@ static bool AtualizaAtoxado(Ator *a, unsigned int mapa)
 			case EVT_FIM_FASE:
 				ATOR_TrocaEstado(a, ATOXADO_VITORIA, false);
 				break;
-			case EVT_COLIDIU_PERSONAGEM:
-				ATOR_TrocaEstado(a, ATOXADO_MORRENDO, false);
+
+			default:
+				AtualizaColisaoAtor(a, &ev, mapa);
 				break;
 			}
 		}
@@ -298,8 +320,9 @@ static bool AtualizaAtoxado(Ator *a, unsigned int mapa)
 			case EVT_FIM_FASE:
 				ATOR_TrocaEstado(a, ATOXADO_VITORIA, false);
 				break;
-			case EVT_COLIDIU_PERSONAGEM:
-				ATOR_TrocaEstado(a, ATOXADO_MORRENDO, false);
+
+			default:
+				AtualizaColisaoAtor(a, &ev, mapa);
 				break;
 
 			}
