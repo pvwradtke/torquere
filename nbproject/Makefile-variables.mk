@@ -9,16 +9,16 @@ CND_DISTDIR=dist
 # Debug configuration
 CND_PLATFORM_Debug=GNU-Linux-x86
 CND_ARTIFACT_DIR_Debug=dist/Debug/GNU-Linux-x86
-CND_ARTIFACT_NAME_Debug=projetotocha
-CND_ARTIFACT_PATH_Debug=dist/Debug/GNU-Linux-x86/projetotocha
+CND_ARTIFACT_NAME_Debug=torquere
+CND_ARTIFACT_PATH_Debug=dist/Debug/GNU-Linux-x86/torquere
 CND_PACKAGE_DIR_Debug=dist/Debug/GNU-Linux-x86/package
-CND_PACKAGE_NAME_Debug=projetotocha.tar
-CND_PACKAGE_PATH_Debug=dist/Debug/GNU-Linux-x86/package/projetotocha.tar
+CND_PACKAGE_NAME_Debug=torquere.tar
+CND_PACKAGE_PATH_Debug=dist/Debug/GNU-Linux-x86/package/torquere.tar
 # Release configuration
 CND_PLATFORM_Release=GNU-Linux-x86
 CND_ARTIFACT_DIR_Release=dist/Release/GNU-Linux-x86
-CND_ARTIFACT_NAME_Release=projetotocha
-CND_ARTIFACT_PATH_Release=dist/Release/GNU-Linux-x86/projetotocha
+CND_ARTIFACT_NAME_Release=torquere
+CND_ARTIFACT_PATH_Release=dist/Release/GNU-Linux-x86/torquere
 CND_PACKAGE_DIR_Release=dist/Release/GNU-Linux-x86/package
-CND_PACKAGE_NAME_Release=projetotocha.tar
-CND_PACKAGE_PATH_Release=dist/Release/GNU-Linux-x86/package/projetotocha.tar
+CND_PACKAGE_NAME_Release=torquere.tar
+CND_PACKAGE_PATH_Release=dist/Release/GNU-Linux-x86/package/torquere.tar
