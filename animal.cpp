@@ -4,7 +4,7 @@
 
 #include "jogo_atores.h"
 
-static void AtualizaDirecao(Ator *a, Evento *ev, unsigned int mapa, int proximoEstado)
+static void AtualizaDirecao(Ator *a, Evento *ev, unsigned int mapa)
 {
 	switch(ev->tipoEvento)
 	{
@@ -69,7 +69,7 @@ bool AtualizaAnimal(Ator *a, InfoAnimal *info, unsigned int mapa)
 						break;
 
 					default:
-						AtualizaDirecao(a, &ev, mapa, ANIMAL_ANDANDO);
+						AtualizaDirecao(a, &ev, mapa);
 						break;
 				}
 			}
@@ -103,7 +103,7 @@ bool AtualizaAnimal(Ator *a, InfoAnimal *info, unsigned int mapa)
 				{
 					a->velocidade=0;
 					a->estado.subestado=ESTADO_RODANDO;
-					a->temporizadores[0] = info->tempoBote;
+					a->temporizadores[0] = info->tempoBote;					
 				}
 
 				while(ATOR_ProximoEvento(a, &ev))
@@ -124,6 +124,7 @@ bool AtualizaAnimal(Ator *a, InfoAnimal *info, unsigned int mapa)
 					printf("Iniciei o ataque\n");
 					a->velocidade=info->velocidadeAtaque;
 					a->estado.subestado=ESTADO_RODANDO;
+					
 					a->temporizadores[0] = info->tempoAtaque;
 				}
 
@@ -137,7 +138,7 @@ bool AtualizaAnimal(Ator *a, InfoAnimal *info, unsigned int mapa)
 						break;		
 
 						default:
-							AtualizaDirecao(a, &ev, mapa, ANIMAL_ATACANDO);
+							AtualizaDirecao(a, &ev, mapa);
 							break;
 					}
 				}
