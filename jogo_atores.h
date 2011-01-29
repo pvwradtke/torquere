@@ -3,7 +3,7 @@
 
 #include <c2d2/chien2d2mapa.h>
 
-// A enumeração com o tipo dos personagens
+// A enumeraï¿½ï¿½o com o tipo dos personagens
 enum 
 { 
 	DARKPHOENIX, 
@@ -14,16 +14,20 @@ enum
 	MORCEGO
 };
 
-// A enumeração das marcas
+// A enumeraï¿½ï¿½o das marcas
 
 enum 
 {
-	MARCA_BOLA_DIREITA = C2D2M_PROG, 
-	MARCA_BOLA_ESQUERDA,
+	MARCA_MADEIRA = C2D2M_PROG,
+	MARCA_GOTEIRA,
+        MARCA_CACHOEIRA,
 	MARCA_LOBO,
 	MARCA_RATO,
 	MARCA_CORUJA,
-	MARCA_MORCEGO
+	MARCA_MORCEGO,
+        MARCA_INIMIGO3,
+        MARCA_FIMDIREITA,
+        MARCA_FIMESQUERDA
 };
 
 #endif
