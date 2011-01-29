@@ -7,7 +7,7 @@
 // A enumera��o com o tipo dos personagens
 enum 
 { 
-	DARKPHOENIX, 
+	ATOXADO, 
 	BOLA,
 	LOBO,
 	RATO,
@@ -36,7 +36,8 @@ enum
 enum 
 {
 	EVT_COLIDIU_FIM_DIREITA = EVT_JOGO_PROG,
-	EVT_COLIDIU_FIM_ESQUERDA
+	EVT_COLIDIU_FIM_ESQUERDA,
+	EVT_ENTROU_NA_LUZ
 };
 
 #endif

@@ -169,6 +169,22 @@
 	</References>
 	<Files>
 		<File
+			RelativePath="..\animal.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\animal.h"
+			>
+		</File>
+		<File
+			RelativePath="..\atoxado.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\atoxado.h"
+			>
+		</File>
+		<File
 			RelativePath="..\jogo_atores.h"
 			>
 		</File>
@@ -181,14 +197,6 @@
 			>
 		</File>
 		<File
-			RelativePath="..\jogo_darkphoenix.cpp"
-			>
-		</File>
-		<File
-			RelativePath="..\jogo_darkphoenix.h"
-			>
-		</File>
-		<File
 			RelativePath="..\lobo.cpp"
 			>
 		</File>
@@ -198,6 +206,14 @@
 		</File>
 		<File
 			RelativePath="..\main.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\rato.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\rato.h"
 			>
 		</File>
 	</Files>

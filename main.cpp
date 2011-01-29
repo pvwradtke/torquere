@@ -8,9 +8,10 @@
 #include <c2d2/ator.h>
 
 #include "jogo_atores.h"
-#include "jogo_darkphoenix.h"
+#include "atoxado.h"
 #include "jogo_bola.h"
 #include "lobo.h"
+#include "rato.h"
 
 // As dimens�es da tela desejada (cheia)
 #define LARGURA_TELA	1024
@@ -102,9 +103,10 @@ int main(int narg, char **valarg) {
     C2D2M_GravidadeMapa(mapa, GRAVIDADE, MAXGRAVIDADE);
 
     // Carrega o personagem
-    bool cdark = JOGO_CarregaDarkPhoenix();
+    bool cdark = CarregaAtoxado();
     bool cbola = JOGO_CarregaBola();
 	bool clobo = CarregaLobo();
+	bool crato = CarregaRato();
 
     // As m�sicas
     unsigned int musicas[2];
@@ -125,7 +127,7 @@ int main(int narg, char **valarg) {
     // cria o personagem
     int x = 60, y = 60;
     C2D2M_PrimeiroBlocoMarca(mapa, C2D2M_INICIO, &x, &y);
-    Ator *dark = ATOR_CriaAtor(DARKPHOENIX, x, y, 0);
+    Ator *dark = ATOR_CriaAtor(ATOXADO, x, y, 0);
 
     Evento ev;
     bool nafase = true;
@@ -138,6 +140,14 @@ int main(int narg, char **valarg) {
 
         while (C2D2M_ProximoBlocoMarca(mapa, &x, &y))
             inimigos.push_back(ATOR_CriaAtor(LOBO, x, y, 0));
+    }
+
+	if (C2D2M_PrimeiroBlocoMarca(mapa, MARCA_RATO, &x, &y)) 
+	{
+        inimigos.push_back(ATOR_CriaAtor(RATO, x, y, 0));
+
+        while (C2D2M_ProximoBlocoMarca(mapa, &x, &y))
+            inimigos.push_back(ATOR_CriaAtor(RATO, x, y, 0));
     }
 
     if (C2D2M_PrimeiroBlocoMarca(mapa, MARCA_BOLA_DIREITA, &x, &y)) {
@@ -243,11 +253,11 @@ int main(int narg, char **valarg) {
         // Desenha a camada mais superior
         C2D2M_DesenhaCamadaMapa(mapa, 3, 0, ydesl, LARGURA_TELA, ALTURA_TELA);
         // DEsenha as mensagens
-        if ((dark->estado.estado == DARK_MORRENDO || dark->estado.estado == DARK_MORREU) && dark->vidas > 0)
+        if ((dark->estado.estado == ATOXADO_MORRENDO || dark->estado.estado == ATOXADO_MORREU) && dark->vidas > 0)
             C2D2_DesenhaTexto(fonte, LARGURA_TELA / 2, ALTURA_TELA / 2 + ydesl, "Ops!", C2D2_TEXTO_CENTRALIZADO);
-        if ((dark->estado.estado == DARK_MORRENDO || dark->estado.estado == DARK_MORREU) && dark->vidas == 0)
+        if ((dark->estado.estado == ATOXADO_MORRENDO || dark->estado.estado == ATOXADO_MORREU) && dark->vidas == 0)
             C2D2_DesenhaTexto(fonte, LARGURA_TELA / 2, ALTURA_TELA / 2 + ydesl, "Game Over", C2D2_TEXTO_CENTRALIZADO);
-        if (dark->estado.estado == DARK_VITORIA)
+        if (dark->estado.estado == ATOXADO_VITORIA)
             C2D2_DesenhaTexto(fonte, LARGURA_TELA / 2, ALTURA_TELA / 2 + ydesl, "Fase Completa!", C2D2_TEXTO_CENTRALIZADO);
 
         // Desenha as barras pretas se necessário
@@ -268,7 +278,7 @@ int main(int narg, char **valarg) {
     }
 
     // Descarrega o personagem
-    ATOR_DescarregaAtor(DARKPHOENIX);
+    ATOR_DescarregaAtor(ATOXADO);
     // Apaga as imagens carregadas na mem�ria
     C2D2_RemoveFonte(fonte);
     // Encerra os atores
