@@ -4,18 +4,24 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Arquivos de cabeçalho"
                    projectFiles="true">
+      <itemPath>animal.h</itemPath>
+      <itemPath>atoxado.h</itemPath>
       <itemPath>jogo_atores.h</itemPath>
       <itemPath>jogo_bola.h</itemPath>
       <itemPath>jogo_coruja.h</itemPath>
-      <itemPath>jogo_darkphoenix.h</itemPath>
+      <itemPath>lobo.h</itemPath>
+      <itemPath>rato.h</itemPath>
     </logicalFolder>
     <logicalFolder name="SourceFiles"
                    displayName="Arquivos de código-fonte"
                    projectFiles="true">
+      <itemPath>animal.cpp</itemPath>
+      <itemPath>atoxado.cpp</itemPath>
       <itemPath>jogo_bola.cpp</itemPath>
       <itemPath>jogo_coruja.cpp</itemPath>
-      <itemPath>jogo_darkphoenix.cpp</itemPath>
+      <itemPath>lobo.cpp</itemPath>
       <itemPath>main.cpp</itemPath>
+      <itemPath>rato.cpp</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
                    displayName="Arquivos de recurso"
