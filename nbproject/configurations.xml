@@ -4,10 +4,15 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Arquivos de cabeçalho"
                    projectFiles="true">
+      <itemPath>jogo_atores.h</itemPath>
+      <itemPath>jogo_bola.h</itemPath>
+      <itemPath>jogo_darkphoenix.h</itemPath>
     </logicalFolder>
     <logicalFolder name="SourceFiles"
                    displayName="Arquivos de código-fonte"
                    projectFiles="true">
+      <itemPath>jogo_bola.cpp</itemPath>
+      <itemPath>jogo_darkphoenix.cpp</itemPath>
       <itemPath>main.cpp</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"

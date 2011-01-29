@@ -1,1 +1,8 @@
-build/Debug/GNU-Linux-x86/main.o: main.cpp
+build/Debug/GNU-Linux-x86/main.o: main.cpp jogo_atores.h \
+ jogo_darkphoenix.h jogo_bola.h
+
+jogo_atores.h:
+
+jogo_darkphoenix.h:
+
+jogo_bola.h:
