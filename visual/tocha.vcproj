@@ -193,6 +193,14 @@
 			>
 		</File>
 		<File
+			RelativePath="..\item_madeira.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\item_madeira.h"
+			>
+		</File>
+		<File
 			RelativePath="..\jogo_atores.h"
 			>
 		</File>

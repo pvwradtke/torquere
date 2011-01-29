@@ -16,7 +16,8 @@ enum
 	RATO,
 	CORUJA,
 	MORCEGO,	
-	GOTA
+	GOTA,
+	ITEM_MADEIRA
 };
 
 // A enumera��o das marcas

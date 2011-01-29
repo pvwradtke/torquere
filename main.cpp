@@ -15,6 +15,7 @@
 #include "rato.h"
 #include "gota.h"
 #include "jogo_coruja.h"
+#include "item_madeira.h"
 
 // As dimens�es da tela desejada (cheia)
 #define LARGURA_TELA	1024
@@ -145,6 +146,7 @@ int main(int narg, char **valarg) {
     bool crato = CarregaRato();
     bool cgota = CarregaGota();
     bool ccoruja = JOGO_CarregaCoruja();
+	bool citemMadeira = CarregaItemMadeira();
 
     // As m�sicas
     unsigned int musicas[2];
@@ -177,6 +179,7 @@ int main(int narg, char **valarg) {
 	CriaInimigo(&inimigos, MARCA_CORUJA, CORUJA, mapa);	
 
 	CriaInimigo(&inimigos, MARCA_GOTA, GOTA, mapa);
+	CriaInimigo(&inimigos, MARCA_MADEIRA, ITEM_MADEIRA, mapa);
 
     // Coloca a m�sica para tocar
     CA2_TocaMusica(musicas[0], -1);
