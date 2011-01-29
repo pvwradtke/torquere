@@ -67,6 +67,11 @@ void ProcessaControle(Ator *a) {
     }
 }
 
+static double subPow2(double a, double b)
+{
+	return (a - b) * (a - b);
+}
+
 int main(int narg, char **valarg) {
     // Inicia a Chien2D 2 e testa se deu tudo certo
     int altura = ALTURA_TELA;
@@ -186,6 +191,7 @@ int main(int narg, char **valarg) {
             }
         }
 
+		double energia2 = dark->energia * dark->energia;
 		for(size_t i = 0;i < inimigos.size(); ++i)
 		{
 			if(ATOR_ColidiuBlocoCenario(inimigos[i], mapa, MARCA_FIMDIREITA))
@@ -198,6 +204,16 @@ int main(int narg, char **valarg) {
 			{
 				ev.tipoEvento = EVT_COLIDIU_FIM_ESQUERDA;
 				ATOR_EnviaEvento(inimigos[i], &ev);
+			}
+
+			if(dark->direcao != inimigos[i]->direcao)
+			{
+				double distancia = subPow2(inimigos[i]->x, dark->x) + subPow2(inimigos[i]->y, dark->y);
+				if(distancia < energia2)
+				{
+					ev.tipoEvento = EVT_PROXIMO_JOGADOR;
+					ATOR_EnviaEvento(inimigos[i], &ev);
+				}
 			}
 		}
 
