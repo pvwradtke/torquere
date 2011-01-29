@@ -292,18 +292,26 @@ int main(int narg, char **valarg) {
         if (dark->estado.estado == ATOXADO_VITORIA)
             C2D2_DesenhaTexto(fonte, LARGURA_TELA / 2, ALTURA_TELA / 2 + ydesl, "Fase Completa!", C2D2_TEXTO_CENTRALIZADO);
 
-        // Desenha as barras pretas se necessário
+        // Calcula o centro da tocha, baseado na posição do personagem no mapa
+        int xmapa, ymapa;
+        C2D2M_PosicaoXY(mapa, &xmapa, &ymapa);
+        int xp = dark->x - xmapa + 16 - 256;
+        int yp = dark->y - ymapa + 15 - 256;
+        // Enfim, desenha a tocha
+        C2D2_DesenhaSprite(tocha, 0, xp, ydesl+yp);
+
+        // Desenha as barras pretas da tocha
+        C2D2P_RetanguloPintado(0,ydesl, LARGURA_TELA, ydesl+yp, 0, 0, 0);
+        C2D2P_RetanguloPintado(0,ydesl+512+yp, LARGURA_TELA, ydesl+ALTURA_TELA, 0, 0, 0);
+        C2D2P_RetanguloPintado(0,ydesl+yp, xp, ydesl+yp+512, 0, 0, 0);
+        C2D2P_RetanguloPintado(xp+512,ydesl+yp, LARGURA_TELA, ydesl+yp+512, 0, 0, 0);
+
+        // Desenha as barras pretas do wide em 4:3 se necessário
         if (ydesl) {
             C2D2P_RetanguloPintado(0, 0, LARGURA_TELA, ydesl, 0, 0, 0);
             C2D2P_RetanguloPintado(0, ydesl + ALTURA_TELA, LARGURA_TELA, 2 * ydesl + ALTURA_TELA, 0, 0, 0);
         }
-        // Enfim, desenha a tocha
-        C2D2_DesenhaSprite(tocha, 0, 256, ydesl+44);
-        // Desenha as barras pretas
-        C2D2P_RetanguloPintado(0,ydesl, LARGURA_TELA, ydesl+44, 0, 0, 0);
-        C2D2P_RetanguloPintado(0,ydesl+556, LARGURA_TELA, ydesl+ALTURA_TELA, 0, 0, 0);
-        C2D2P_RetanguloPintado(0,ydesl+44, 256, ydesl+556, 0, 0, 0);
-        C2D2P_RetanguloPintado(768,ydesl+44, LARGURA_TELA, ydesl+556, 0, 0, 0);
+
 
         C2D2_Sincroniza(C2D2_FPS_PADRAO);
         if (teclado[C2D2_ENTER].ativo)
