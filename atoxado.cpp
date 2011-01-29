@@ -128,6 +128,11 @@ static void AtualizaColisaoAtor(Ator *a, Evento *ev, unsigned int mapa)
 	}
 }
 
+static void AtualizaTochada(Actor *a, Event *ev, unsigned int mapa)
+{
+
+}
+
 static void AtualizaVoo(Ator *a, Evento *ev, unsigned int mapa)
 {
 	switch(ev->tipoEvento)
