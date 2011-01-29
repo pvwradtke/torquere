@@ -15,6 +15,7 @@
 #include "rato.h"
 #include "gota.h"
 #include "jogo_coruja.h"
+#include "jogo_morcego.h"
 #include "item_madeira.h"
 
 // As dimens�es da tela desejada (cheia)
@@ -186,13 +187,14 @@ int main(int narg, char **valarg) {
     bool cgota = CarregaGota();
     bool ccoruja = JOGO_CarregaCoruja();
     bool citemMadeira = CarregaItemMadeira();
+    bool cmorcego = JOGO_CarregaMorcego();
 
     // As m�sicas
     unsigned int musicas[2];
     musicas[0] = CA2_CarregaMusica("audio/AulaPaulo_byPiovezan.it");
     musicas[1] = CA2_CarregaMusica("audio/venceu.wav");
     // Testa se carregou certo (se � diferente de 0)
-    if (fonte == 0 || mapa == 0 || !cdark || !cbola || !ccoruja) {
+    if (fonte == 0 || mapa == 0 || !cdark || !cbola || !ccoruja || !cmorcego) {
         printf("Falhou ao carregar alguma coisa. Encerrando.\n");
         // Encerra a Chien2d2
         CA2_Encerra();
@@ -219,6 +221,7 @@ int main(int narg, char **valarg) {
 
 	CriaInimigo(&inimigos, MARCA_GOTA, GOTA, mapa);
 	CriaInimigo(&inimigos, MARCA_MADEIRA, ITEM_MADEIRA, mapa);
+        CriaInimigo(&inimigos, MARCA_MORCEGO, MORCEGO, mapa);
 
     // Coloca a m�sica para tocar
     CA2_TocaMusica(musicas[0], -1);

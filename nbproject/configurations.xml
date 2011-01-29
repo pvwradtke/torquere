@@ -6,9 +6,12 @@
                    projectFiles="true">
       <itemPath>animal.h</itemPath>
       <itemPath>atoxado.h</itemPath>
+      <itemPath>gota.h</itemPath>
+      <itemPath>item_madeira.h</itemPath>
       <itemPath>jogo_atores.h</itemPath>
       <itemPath>jogo_bola.h</itemPath>
       <itemPath>jogo_coruja.h</itemPath>
+      <itemPath>jogo_morcego.h</itemPath>
       <itemPath>lobo.h</itemPath>
       <itemPath>rato.h</itemPath>
     </logicalFolder>
@@ -17,8 +20,11 @@
                    projectFiles="true">
       <itemPath>animal.cpp</itemPath>
       <itemPath>atoxado.cpp</itemPath>
+      <itemPath>gota.cpp</itemPath>
+      <itemPath>item_madeira.cpp</itemPath>
       <itemPath>jogo_bola.cpp</itemPath>
       <itemPath>jogo_coruja.cpp</itemPath>
+      <itemPath>jogo_morcego.cpp</itemPath>
       <itemPath>lobo.cpp</itemPath>
       <itemPath>main.cpp</itemPath>
       <itemPath>rato.cpp</itemPath>
