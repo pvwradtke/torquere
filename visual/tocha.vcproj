@@ -189,6 +189,14 @@
 			>
 		</File>
 		<File
+			RelativePath="..\lobo.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\lobo.h"
+			>
+		</File>
+		<File
 			RelativePath="..\main.cpp"
 			>
 		</File>
