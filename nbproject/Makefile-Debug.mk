@@ -31,8 +31,11 @@ OBJECTDIR=build/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
+	${OBJECTDIR}/item_madeira.o \
 	${OBJECTDIR}/jogo_bola.o \
 	${OBJECTDIR}/lobo.o \
+	${OBJECTDIR}/jogo_morcego.o \
+	${OBJECTDIR}/gota.o \
 	${OBJECTDIR}/main.o \
 	${OBJECTDIR}/jogo_coruja.o \
 	${OBJECTDIR}/rato.o \
@@ -63,6 +66,11 @@ dist/Debug/GNU-Linux-x86/torquere: ${OBJECTFILES}
 	${MKDIR} -p dist/Debug/GNU-Linux-x86
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/torquere ${OBJECTFILES} ${LDLIBSOPTIONS} 
 
+${OBJECTDIR}/item_madeira.o: nbproject/Makefile-${CND_CONF}.mk item_madeira.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/item_madeira.o item_madeira.cpp
+
 ${OBJECTDIR}/jogo_bola.o: nbproject/Makefile-${CND_CONF}.mk jogo_bola.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
@@ -72,6 +80,16 @@ ${OBJECTDIR}/lobo.o: nbproject/Makefile-${CND_CONF}.mk lobo.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/lobo.o lobo.cpp
+
+${OBJECTDIR}/jogo_morcego.o: nbproject/Makefile-${CND_CONF}.mk jogo_morcego.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/jogo_morcego.o jogo_morcego.cpp
+
+${OBJECTDIR}/gota.o: nbproject/Makefile-${CND_CONF}.mk gota.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/gota.o gota.cpp
 
 ${OBJECTDIR}/main.o: nbproject/Makefile-${CND_CONF}.mk main.cpp 
 	${MKDIR} -p ${OBJECTDIR}

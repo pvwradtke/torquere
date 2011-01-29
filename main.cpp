@@ -16,6 +16,7 @@
 #include "gota.h"
 #include "jogo_coruja.h"
 #include "item_madeira.h"
+#include "jogo_morcego.h"
 
 // As dimens�es da tela desejada (cheia)
 #define LARGURA_TELA	1024
@@ -127,15 +128,16 @@ int main(int narg, char **valarg) {
     // Carrega a fonte do sistema
     unsigned int fonte = C2D2_CarregaFonte("imagens/isabelle64_alpha.png", 64);
     // Carrega o mapa
-    unsigned int mapa = C2D2M_CarregaMapaMappy("fases/Aula04-Mapa.FMP", "fases/Aula04-tileset.png");
+    //unsigned int mapa = C2D2M_CarregaMapaMappy("fases/Aula04-Mapa.FMP", "fases/Aula04-tileset.png");
+    unsigned int mapa = C2D2M_CarregaMapaMappy("fases/atocha.fmp", "fases/tileset.png");
     // D� as velocidades. As duas �ltimas devem ser 1. As demais, incrementa de 1 em 1
     int numcamadas = 4;
-    C2D2M_VelocidadeCamadaMapa(mapa, numcamadas - 1, 1);
+    //C2D2M_VelocidadeCamadaMapa(mapa, numcamadas - 1, 1);
     // Faz um for esot�rico para atribuir as velocidades. Se pra voc� facilitar, use uma camada s� que n�o d� nada
-    for (int i = 0, vel = numcamadas - 1; i < numcamadas - 1; i++, vel--)
-        C2D2M_VelocidadeCamadaMapa(mapa, i, vel);
+    for (int i = 3; i < 5; i++)
+        C2D2M_VelocidadeCamadaMapa(mapa, i, 1);
     // A camada de marcas � sempre a �ltima
-    C2D2M_CamadaMarcas(mapa, 4, 89);
+    C2D2M_CamadaMarcas(mapa, 0, 1);
     // Indica a gravidade a aplicar no mapa
     C2D2M_GravidadeMapa(mapa, GRAVIDADE, MAXGRAVIDADE);
 
@@ -146,14 +148,15 @@ int main(int narg, char **valarg) {
     bool crato = CarregaRato();
     bool cgota = CarregaGota();
     bool ccoruja = JOGO_CarregaCoruja();
-	bool citemMadeira = CarregaItemMadeira();
+    bool citemMadeira = CarregaItemMadeira();
+    bool cmorcego = JOGO_CarregaMorcego();
 
     // As m�sicas
     unsigned int musicas[2];
     musicas[0] = CA2_CarregaMusica("audio/AulaPaulo_byPiovezan.it");
     musicas[1] = CA2_CarregaMusica("audio/venceu.wav");
     // Testa se carregou certo (se � diferente de 0)
-    if (fonte == 0 || mapa == 0 || !cdark || !cbola || !ccoruja) {
+    if (fonte == 0 || mapa == 0 || !cdark || !cbola || !ccoruja || !citemMadeira || !cmorcego) {
         printf("Falhou ao carregar alguma coisa. Encerrando.\n");
         // Encerra a Chien2d2
         CA2_Encerra();
@@ -180,6 +183,7 @@ int main(int narg, char **valarg) {
 
 	CriaInimigo(&inimigos, MARCA_GOTA, GOTA, mapa);
 	CriaInimigo(&inimigos, MARCA_MADEIRA, ITEM_MADEIRA, mapa);
+        CriaInimigo(&inimigos, MARCA_MORCEGO, MORCEGO, mapa);
 
     // Coloca a m�sica para tocar
     CA2_TocaMusica(musicas[0], -1);
@@ -269,9 +273,12 @@ int main(int narg, char **valarg) {
         }
 
         // Desenha o cen�rio
-        C2D2M_DesenhaCamadaMapa(mapa, 0, 0, ydesl, LARGURA_TELA, ALTURA_TELA);
-        C2D2M_DesenhaCamadaMapa(mapa, 1, 0, ydesl, LARGURA_TELA, ALTURA_TELA);
-        C2D2M_DesenhaCamadaMapa(mapa, 2, 0, ydesl, LARGURA_TELA, ALTURA_TELA);
+        C2D2M_DesenhaCamadaMapa(mapa, 3, 0, ydesl, LARGURA_TELA, ALTURA_TELA);
+        C2D2M_DesenhaCamadaMapa(mapa, 4, 0, ydesl, LARGURA_TELA, ALTURA_TELA);
+        // Desenha a camada mais superior
+        C2D2M_DesenhaCamadaMapa(mapa, 5, 0, ydesl, LARGURA_TELA, ALTURA_TELA);
+
+        //C2D2M_DesenhaCamadaMapa(mapa, 2, 0, ydesl, LARGURA_TELA, ALTURA_TELA);
         // DEsenha os personagens
         ATOR_Desenha(dark, mapa, 0, ydesl);
         for (size_t i = 0; i < inimigos.size(); i++) {
@@ -279,8 +286,6 @@ int main(int narg, char **valarg) {
                 ATOR_Desenha(inimigos[i], mapa, 0, ydesl);
         }
 
-        // Desenha a camada mais superior
-        C2D2M_DesenhaCamadaMapa(mapa, 3, 0, ydesl, LARGURA_TELA, ALTURA_TELA);
         // DEsenha as mensagens
         if ((dark->estado.estado == ATOXADO_MORRENDO || dark->estado.estado == ATOXADO_MORREU) && dark->vidas > 0)
             C2D2_DesenhaTexto(fonte, LARGURA_TELA / 2, ALTURA_TELA / 2 + ydesl, "Ops!", C2D2_TEXTO_CENTRALIZADO);
@@ -297,7 +302,7 @@ int main(int narg, char **valarg) {
         C2D2_Sincroniza(C2D2_FPS_PADRAO);
         if (teclado[C2D2_ENTER].ativo)
             C2D2_Pausa(50);
-        C2D2M_AnimaMapa(mapa);
+        //C2D2M_AnimaMapa(mapa);
     }
 
     // Apaga os personagens
