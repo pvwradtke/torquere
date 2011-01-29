@@ -37,6 +37,27 @@ char *sons[]={
 	"audio/morreu.wav"
 };
 
+enum 
+{
+	TEMPORIZADOR_MORRENDO = 0,
+	TEMPORIZADOR_MORTE,
+	TEMPORIZADOR_VITORIA,
+	TEMPORIZADOR_TOCHA
+};
+
+enum CamposAuxiliaresInt
+{
+	INT_RESETA_TOCHA = 0,
+	INT_OSCILACAO_TOCHA = 1
+};
+
+enum CamposAuxiliaresReal
+{
+	REAL_X = 0,
+	REAL_Y,
+	REAL_ENERGIA_TOCHA
+};
+
 static bool AtualizaAtoxado(Ator *a, unsigned int mapa);
 
 // A função que carrega o DarkPhoenix.
@@ -118,8 +139,8 @@ static void AtualizaVoo(Ator *a, Evento *ev, unsigned int mapa)
 			break;
 
 		case EVT_CHECKPOINT:
-			a->aux_real[0] = a->x;
-			a->aux_real[1] = a->y;
+			a->aux_real[REAL_X] = a->x;
+			a->aux_real[REAL_Y] = a->y;
 			break;
 
 		case EVT_FIM_FASE:
@@ -128,6 +149,35 @@ static void AtualizaVoo(Ator *a, Evento *ev, unsigned int mapa)
 
 		default:
 			AtualizaColisaoAtor(a, ev, mapa);
+			break;
+	}
+}
+
+#define TEMPO_TOCHA 2
+
+#define ENERGIA_MINIMA 164
+#define ENERGIA_INICIAL 512
+#define OSCILACAO_MAX 30
+
+static void AtualizaTocha(Ator *a, Evento *ev, unsigned int mapa)
+{
+	switch(ev->tipoEvento)
+	{
+		case EVT_TEMPO:
+			if(ev->subtipo != TEMPORIZADOR_TOCHA)
+				break;
+
+			a->temporizadores[TEMPORIZADOR_TOCHA] = TEMPO_TOCHA;
+			a->aux_real[REAL_ENERGIA_TOCHA] -= 0.1f;	
+			a->energia = (int)(a->aux_real[REAL_ENERGIA_TOCHA] + (rand() % OSCILACAO_MAX));
+
+			if(a->aux_real[REAL_ENERGIA_TOCHA] <= ENERGIA_MINIMA)
+			{				
+				a->energia = ENERGIA_MINIMA / 2;
+				a->aux_int[INT_RESETA_TOCHA] = true;
+
+				ATOR_TrocaEstado(a, ATOXADO_MORRENDO, false);
+			}
 			break;
 	}
 }
@@ -142,277 +192,292 @@ static bool AtualizaAtoxado(Ator *a, unsigned int mapa)
 	Evento ev;
 	switch(a->estado.estado)
 	{
-	case ATOR_NASCENDO:
-		// Muda para o estado adequado
-		ATOR_TrocaEstado(a, ATOXADO_INICIO, false);
-		a->vidas=3;
-		a->energia = 128;
-		break;
+		case ATOR_NASCENDO:
+			// Muda para o estado adequado
+			ATOR_TrocaEstado(a, ATOXADO_INICIO, false);
+			a->vidas=3;
+			a->aux_real[REAL_ENERGIA_TOCHA] = ENERGIA_INICIAL;
+			a->energia = ENERGIA_INICIAL;
+			a->temporizadores[TEMPORIZADOR_TOCHA] = TEMPO_TOCHA;
+			break;
 
-	case ATOXADO_INICIO:
-		// Indica para qual direção está olhando
-		a->olhandoPara=0;
-		// Guarda a posição inicial
-		a->aux_real[0] = a->x;
-		a->aux_real[1] = a->y;
-		ATOR_TrocaEstado(a, ATOXADO_PARADO, false);
-		break;
+		case ATOXADO_INICIO:
+			// Indica para qual direção está olhando
+			a->olhandoPara=0;
+			// Guarda a posição inicial
+			a->aux_real[REAL_X] = a->x;
+			a->aux_real[REAL_Y] = a->y;
+			ATOR_TrocaEstado(a, ATOXADO_PARADO, false);
+			break;
 
-	case ATOXADO_PARADO:
-		if(a->estado.subestado==ESTADO_INICIO)
-		{
-			a->velocidade=0;
-			a->estado.subestado=ESTADO_RODANDO;
-			if(a->direcao==0)
-				ATOR_TrocaAnimacao(a, 0);
-			else
-				ATOR_TrocaAnimacao(a, 1);
-		}
-
-		while(ATOR_ProximoEvento(a, &ev))
-		{
-			switch(ev.tipoEvento)
+		case ATOXADO_PARADO:
+			if(a->estado.subestado==ESTADO_INICIO)
 			{
-			case EVT_PRESSIONOU_BOTAO1:
-				ATOR_TrocaEstado(a, ATOXADO_PULANDO, false);
-				break;
-			case EVT_PRESSIONOU_ESQ:
-				ATOR_TrocaEstado(a, ATOXADO_ANDANDO,false);
-				a->direcao=180;
-				break;
-			case EVT_PRESSIONOU_DIR:
-				ATOR_TrocaEstado(a, ATOXADO_ANDANDO,false);
-				a->direcao=0;
-				break;
-			case EVT_COMECOU_CAIR:
-				ATOR_TrocaEstado(a, ATOXADO_CAINDO, false);
-				break;
-			case EVT_COLIDIU_ARMADILHA:
-				ATOR_TrocaEstado(a, ATOXADO_MORRENDO, false);
-				break;
-			case EVT_CHECKPOINT:
-				a->aux_real[0] = a->x;
-				a->aux_real[1] = a->y;
-				break;
-			case EVT_FIM_FASE:
-				ATOR_TrocaEstado(a, ATOXADO_VITORIA, false);
-				break;
-
-			default:
-				AtualizaColisaoAtor(a, &ev, mapa);
-				break;
-			}
-		}
-		break;
-	case ATOXADO_PULANDO:
-		if(a->estado.subestado==ESTADO_INICIO)
-		{
-			ATOR_Impulsiona(a, VPULO);
-			ATOR_TocaEfeitoTela(a, 0, mapa);
-			a->estado.subestado=ESTADO_RODANDO;
-			if(a->direcao==0)
-				ATOR_TrocaAnimacao(a, 4);
-			else
-				ATOR_TrocaAnimacao(a, 5);
-
-		}
-		while(ATOR_ProximoEvento(a, &ev))
-		{
-			switch(ev.tipoEvento)
-			{
-			case EVT_TOPO_PULO:
-				ATOR_TrocaEstado(a, ATOXADO_CAINDO, false);
-				break;
-			case EVT_COLIDIU_PAREDE:
-				if(ev.subtipo == SUBEVT_COLIDIU_PAREDE_CIMA)
-				{
-					ATOR_TrocaEstado(a, ATOXADO_CAINDO, false);
-					ATOR_TocaEfeitoTela(a, 1, mapa);
-				}
-				break;			
-
-			case EVT_SAIU_FORA_MAPA:
-				if(ev.subtipo != SUBEVT_SAIU_FORA_MAPA_CIMA)
-					ATOR_TrocaEstado(a, ATOXADO_MORRENDO, false);
-				break;
-
-			default:
-				AtualizaVoo(a, &ev, mapa);
-				break;
-
-			}
-		}
-		break;
-	case ATOXADO_CAINDO:
-		if(a->estado.subestado==ESTADO_INICIO)
-		{
-			a->estado.subestado=ESTADO_RODANDO;
-			if(a->direcao==0)
-				ATOR_TrocaAnimacao(a, 6);
-			else
-				ATOR_TrocaAnimacao(a, 7);
-
-		}
-		while(ATOR_ProximoEvento(a, &ev))
-		{
-			switch(ev.tipoEvento)
-			{
-			case EVT_SAIU_FORA_MAPA:
-				if(ev.subtipo != SUBEVT_SAIU_FORA_MAPA_CIMA)
-					ATOR_TrocaEstado(a, ATOXADO_MORRENDO, false);
-				break;
-			case EVT_COLIDIU_PAREDE:
-				if(ev.subtipo == SUBEVT_COLIDIU_PAREDE_BAIXO)
-					if(a->velocidade == 0)
-						ATOR_TrocaEstado(a, ATOXADO_PARADO, false);
-					else
-						ATOR_TrocaEstado(a, ATOXADO_ANDANDO, false);
-				break;										
-
-			default:
-				AtualizaVoo(a, &ev, mapa);
-				break;
-			}
-		}
-
-		break;
-
-	case ATOXADO_ANDANDO:
-		if(a->estado.subestado==ESTADO_INICIO)
-		{
-			a->velocidade=VANDA;
-			a->estado.subestado=ESTADO_RODANDO;
-			if(a->direcao==0)
-				ATOR_TrocaAnimacao(a, 2);
-			else
-				ATOR_TrocaAnimacao(a, 3);
-		}
-		while(ATOR_ProximoEvento(a, &ev))
-		{
-			switch(ev.tipoEvento)
-			{
-			case EVT_PRESSIONOU_BOTAO1:
- 				ATOR_TrocaEstado(a, ATOXADO_PULANDO, false);
-				break;
-			case EVT_LIBEROU_ESQ:
-				if(a->direcao==180)
-					ATOR_TrocaEstado(a, ATOXADO_PARADO,false);
-				break;
-			case EVT_LIBEROU_DIR:
+				a->velocidade=0;
+				a->estado.subestado=ESTADO_RODANDO;
 				if(a->direcao==0)
-					ATOR_TrocaEstado(a, ATOXADO_PARADO,false);
-				break;
-			case EVT_COLIDIU_PAREDE:
-				if(ev.subtipo==SUBEVT_COLIDIU_PAREDE_CIMA)
-					ATOR_TocaEfeitoTela(a, 1, mapa);
-				break;
-			case EVT_SAIU_FORA_MAPA:
-				if(ev.subtipo != SUBEVT_SAIU_FORA_MAPA_CIMA)
-					ATOR_TrocaEstado(a, ATOXADO_MORRENDO, false);
-				break;
-			case EVT_COLIDIU_ARMADILHA:
-				ATOR_TrocaEstado(a, ATOXADO_MORRENDO, false);
-				break;
-			case EVT_CHECKPOINT:
-				a->aux_real[0] = a->x;
-				a->aux_real[1] = a->y;
-				break;
-			case EVT_FIM_FASE:
-				ATOR_TrocaEstado(a, ATOXADO_VITORIA, false);
-				break;
-
-			default:
-				AtualizaColisaoAtor(a, &ev, mapa);
-				break;
-
+					ATOR_TrocaAnimacao(a, 0);
+				else
+					ATOR_TrocaAnimacao(a, 1);
 			}
-		}
-		break;
-	case ATOXADO_MORRENDO:
-		if(a->estado.subestado == ESTADO_INICIO)
-		{
-			ATOR_Impulsiona(a, VPULO*1.5);
-			ATOR_TrocaAnimacao(a, 9);
-			ATOR_TocaEfeitoTela(a, 2, mapa);
-			a->temporizadores[0] = 120;
-			a->estado.subestado = ESTADO_RODANDO;
-			a->velocidade=0;
-			a->vidas--;
-		}
-		while(ATOR_ProximoEvento(a, &ev))
-		{
-			switch(ev.tipoEvento)
+
+			while(ATOR_ProximoEvento(a, &ev))
 			{
-			case EVT_COLIDIU_PAREDE:
-				if(ev.subtipo == SUBEVT_COLIDIU_PAREDE_BAIXO)
-					ATOR_TrocaEstado(a, ATOXADO_MORREU, false);
-				break;
-			case EVT_TEMPO:
-				if(ev.subtipo==0)
-					ATOR_TrocaEstado(a, ATOXADO_MORREU, false);
-				break;
-			}
-		}
-		break;
-	case ATOXADO_MORREU:
-		if(a->estado.subestado == ESTADO_INICIO)
-		{
-			ATOR_TrocaAnimacao(a, 10);
-			a->velocidade=0;
-			a->temporizadores[0] = 60;
-			a->estado.subestado = ESTADO_RODANDO;
-		}
-		while(ATOR_ProximoEvento(a, &ev))
-		{
-			switch(ev.tipoEvento)
-			{
-			case EVT_TEMPO:
-				if(ev.subtipo==0)
+				switch(ev.tipoEvento)
 				{
-					if(a->vidas>0)
-					{
-						a->x = a->aux_real[0];
-						a->y = a->aux_real[1];
+					case EVT_PRESSIONOU_BOTAO1:
+						ATOR_TrocaEstado(a, ATOXADO_PULANDO, false);
+						break;
+					case EVT_PRESSIONOU_ESQ:
+						ATOR_TrocaEstado(a, ATOXADO_ANDANDO,false);
+						a->direcao=180;
+						break;
+					case EVT_PRESSIONOU_DIR:
+						ATOR_TrocaEstado(a, ATOXADO_ANDANDO,false);
 						a->direcao=0;
-						ATOR_TrocaEstado(a, ATOXADO_PARADO, false);
-					}
-					else
-						ATOR_TrocaEstado(a, ATOR_ENCERRADO, false);
+						break;
+					case EVT_COMECOU_CAIR:
+						ATOR_TrocaEstado(a, ATOXADO_CAINDO, false);
+						break;
+					case EVT_COLIDIU_ARMADILHA:
+						ATOR_TrocaEstado(a, ATOXADO_MORRENDO, false);
+						break;
+					case EVT_CHECKPOINT:
+						a->aux_real[REAL_X] = a->x;
+						a->aux_real[REAL_Y] = a->y;
+						break;
+					case EVT_FIM_FASE:
+						ATOR_TrocaEstado(a, ATOXADO_VITORIA, false);
+						break;
+
+					default:
+						AtualizaTocha(a, &ev, mapa);
+						AtualizaColisaoAtor(a, &ev, mapa);
+						break;
 				}
-				break;
 			}
-		}
-		break;
-	case ATOR_ENCERRADO:
-		if(a->estado.subestado == ESTADO_INICIO)
-		{
-			a->estado.subestado=ESTADO_RODANDO;
-			a->velocidade=0;
-			ev.tipoEvento = EVT_FIM_FASE;
-			ev.subtipo = SUBEVT_FIM_FASE_DERROTA;
-			ATOR_EnviaEventoJogo(&ev);
-
-		}
-
-		return false;
-	case ATOXADO_VITORIA:
-		if(a->estado.subestado == ESTADO_INICIO)
-		{
-			a->estado.subestado=ESTADO_RODANDO;
-			ATOR_TrocaAnimacao(a, 8);
-			a->temporizadores[0]=240;
-			a->velocidade=0;
-		}
-		while(ATOR_ProximoEvento(a, &ev))
-		{
-			if(ev.tipoEvento==EVT_TEMPO)
+			break;
+		case ATOXADO_PULANDO:
+			if(a->estado.subestado==ESTADO_INICIO)
 			{
-				ev.tipoEvento = EVT_FIM_FASE;
-				ev.subtipo = SUBEVT_FIM_FASE_VITORIA;
-				ATOR_EnviaEventoJogo(&ev);
+				ATOR_Impulsiona(a, VPULO);
+				ATOR_TocaEfeitoTela(a, 0, mapa);
+				a->estado.subestado=ESTADO_RODANDO;
+				if(a->direcao==0)
+					ATOR_TrocaAnimacao(a, 4);
+				else
+					ATOR_TrocaAnimacao(a, 5);
+
 			}
-		}
-		break;
+			while(ATOR_ProximoEvento(a, &ev))
+			{
+				switch(ev.tipoEvento)
+				{
+					case EVT_TOPO_PULO:
+						ATOR_TrocaEstado(a, ATOXADO_CAINDO, false);
+						break;
+					case EVT_COLIDIU_PAREDE:
+						if(ev.subtipo == SUBEVT_COLIDIU_PAREDE_CIMA)
+						{
+							ATOR_TrocaEstado(a, ATOXADO_CAINDO, false);
+							ATOR_TocaEfeitoTela(a, 1, mapa);
+						}
+						break;			
+
+					case EVT_SAIU_FORA_MAPA:
+						if(ev.subtipo != SUBEVT_SAIU_FORA_MAPA_CIMA)
+							ATOR_TrocaEstado(a, ATOXADO_MORRENDO, false);
+						break;
+
+					default:
+						AtualizaTocha(a, &ev, mapa);
+						AtualizaVoo(a, &ev, mapa);
+						break;
+				}
+			}
+			break;
+		case ATOXADO_CAINDO:
+			if(a->estado.subestado==ESTADO_INICIO)
+			{
+				a->estado.subestado=ESTADO_RODANDO;
+				if(a->direcao==0)
+					ATOR_TrocaAnimacao(a, 6);
+				else
+					ATOR_TrocaAnimacao(a, 7);
+
+			}
+			while(ATOR_ProximoEvento(a, &ev))
+			{
+				switch(ev.tipoEvento)
+				{
+					case EVT_SAIU_FORA_MAPA:
+						if(ev.subtipo != SUBEVT_SAIU_FORA_MAPA_CIMA)
+							ATOR_TrocaEstado(a, ATOXADO_MORRENDO, false);
+						break;
+					case EVT_COLIDIU_PAREDE:
+						if(ev.subtipo == SUBEVT_COLIDIU_PAREDE_BAIXO)
+							if(a->velocidade == 0)
+								ATOR_TrocaEstado(a, ATOXADO_PARADO, false);
+							else
+								ATOR_TrocaEstado(a, ATOXADO_ANDANDO, false);
+						break;										
+
+					default:
+						AtualizaTocha(a, &ev, mapa);
+						AtualizaVoo(a, &ev, mapa);
+						break;
+				}
+			}
+
+			break;
+
+		case ATOXADO_ANDANDO:
+			if(a->estado.subestado==ESTADO_INICIO)
+			{
+				a->velocidade=VANDA;
+				a->estado.subestado=ESTADO_RODANDO;
+				if(a->direcao==0)
+					ATOR_TrocaAnimacao(a, 2);
+				else
+					ATOR_TrocaAnimacao(a, 3);
+			}
+			while(ATOR_ProximoEvento(a, &ev))
+			{
+				switch(ev.tipoEvento)
+				{
+					case EVT_PRESSIONOU_BOTAO1:
+ 						ATOR_TrocaEstado(a, ATOXADO_PULANDO, false);
+						break;
+					case EVT_LIBEROU_ESQ:
+						if(a->direcao==180)
+							ATOR_TrocaEstado(a, ATOXADO_PARADO,false);
+						break;
+					case EVT_LIBEROU_DIR:
+						if(a->direcao==0)
+							ATOR_TrocaEstado(a, ATOXADO_PARADO,false);
+						break;
+					case EVT_COLIDIU_PAREDE:
+						if(ev.subtipo==SUBEVT_COLIDIU_PAREDE_CIMA)
+							ATOR_TocaEfeitoTela(a, 1, mapa);
+						break;
+					case EVT_SAIU_FORA_MAPA:
+						if(ev.subtipo != SUBEVT_SAIU_FORA_MAPA_CIMA)
+							ATOR_TrocaEstado(a, ATOXADO_MORRENDO, false);
+						break;
+					case EVT_COLIDIU_ARMADILHA:
+						ATOR_TrocaEstado(a, ATOXADO_MORRENDO, false);
+						break;
+					case EVT_CHECKPOINT:
+						a->aux_real[REAL_X] = a->x;
+						a->aux_real[REAL_Y] = a->y;
+						break;
+					case EVT_FIM_FASE:
+						ATOR_TrocaEstado(a, ATOXADO_VITORIA, false);
+						break;
+
+					default:
+						AtualizaTocha(a, &ev, mapa);
+						AtualizaColisaoAtor(a, &ev, mapa);
+						break;
+				}
+			}
+			break;
+		case ATOXADO_MORRENDO:
+			if(a->estado.subestado == ESTADO_INICIO)
+			{
+				ATOR_Impulsiona(a, VPULO*1.5);
+				ATOR_TrocaAnimacao(a, 9);
+				ATOR_TocaEfeitoTela(a, 2, mapa);
+				a->temporizadores[TEMPORIZADOR_MORRENDO] = 120;
+				a->estado.subestado = ESTADO_RODANDO;
+				a->velocidade=0;
+				a->vidas--;
+			}
+			while(ATOR_ProximoEvento(a, &ev))
+			{
+				switch(ev.tipoEvento)
+				{
+					case EVT_COLIDIU_PAREDE:
+						if(ev.subtipo == SUBEVT_COLIDIU_PAREDE_BAIXO)
+							ATOR_TrocaEstado(a, ATOXADO_MORREU, false);
+						break;
+					case EVT_TEMPO:
+						if(ev.subtipo==TEMPORIZADOR_MORRENDO)
+							ATOR_TrocaEstado(a, ATOXADO_MORREU, false);
+						break;
+				}
+			}
+			break;
+		case ATOXADO_MORREU:
+			if(a->estado.subestado == ESTADO_INICIO)
+			{
+				ATOR_TrocaAnimacao(a, 10);
+				a->velocidade=0;
+				a->temporizadores[TEMPORIZADOR_MORTE] = 60;
+				a->estado.subestado = ESTADO_RODANDO;
+			}
+			while(ATOR_ProximoEvento(a, &ev))
+			{
+				switch(ev.tipoEvento)
+				{
+				case EVT_TEMPO:
+					if(ev.subtipo==TEMPORIZADOR_MORTE)
+					{
+						if(a->vidas>0)
+						{
+							a->x = a->aux_real[REAL_X];
+							a->y = a->aux_real[REAL_Y];
+							a->direcao=0;
+
+							//religamos a tocha
+							a->temporizadores[TEMPORIZADOR_TOCHA] = TEMPO_TOCHA;
+
+							if(a->aux_int[INT_RESETA_TOCHA])
+							{
+								a->aux_int[INT_RESETA_TOCHA] = false;
+								a->aux_real[REAL_ENERGIA_TOCHA] = ENERGIA_INICIAL;
+								a->energia = ENERGIA_INICIAL;
+							}
+
+							ATOR_TrocaEstado(a, ATOXADO_PARADO, false);
+						}
+						else
+							ATOR_TrocaEstado(a, ATOR_ENCERRADO, false);
+					}
+					break;
+				}
+			}
+			break;
+		case ATOR_ENCERRADO:
+			if(a->estado.subestado == ESTADO_INICIO)
+			{
+				a->estado.subestado=ESTADO_RODANDO;
+				a->velocidade=0;
+				ev.tipoEvento = EVT_FIM_FASE;
+				ev.subtipo = SUBEVT_FIM_FASE_DERROTA;
+				ATOR_EnviaEventoJogo(&ev);
+
+			}
+
+			return false;
+		case ATOXADO_VITORIA:
+			if(a->estado.subestado == ESTADO_INICIO)
+			{
+				a->estado.subestado=ESTADO_RODANDO;
+				ATOR_TrocaAnimacao(a, 8);
+				a->temporizadores[TEMPORIZADOR_VITORIA]=240;
+				a->velocidade=0;
+			}
+			while(ATOR_ProximoEvento(a, &ev))
+			{
+				if((ev.tipoEvento==EVT_TEMPO) && (ev.subtipo == TEMPORIZADOR_VITORIA))
+				{
+					ev.tipoEvento = EVT_FIM_FASE;
+					ev.subtipo = SUBEVT_FIM_FASE_VITORIA;
+					ATOR_EnviaEventoJogo(&ev);
+				}
+			}
+			break;
 	}
 	return true;
 }

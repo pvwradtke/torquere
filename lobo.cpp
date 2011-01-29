@@ -24,7 +24,7 @@ InfoAnimal infoLobo = {
 	//tempo Bote
 	50,
 	//tempo ataque
-	20
+	100
 };
 
 static bool AtualizaLobo(Ator *a, unsigned int mapa);
