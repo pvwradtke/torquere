@@ -29,48 +29,49 @@ int ydesl = 0;
 
 typedef std::vector<Ator *> VectorInimigos;
 
-void ProcessaControle(Ator *a);
+static void ProcessaBotao(Ator *a, C2D2_Botao *teclado, C2D2_Joystick *joystick, int eventoTeclado, int eventoJoystick, int eventoPressionou, int eventoLibera)
+{
+	Evento ev;
 
-void ProcessaControle(Ator *a) {
+	 //Se tecla pressionado ou temos joystick e botao do joystick pressionado
+	if ((teclado[eventoTeclado].pressionado) || (joystick && joystick->direcional[0][eventoJoystick].pressionado)) {
+        ev.tipoEvento = eventoPressionou;
+        ATOR_EnviaEvento(a, &ev);
+    }
+
+	//Se tecla pressionado E (nao temos joystick OU temos joystick e direcional do joystick nao pressionao
+	//OU se temos joystick e teclado não pressionado e direcional do joystick liberado
+    if ((teclado[eventoTeclado].liberado && (!joystick || !joystick->direcional[0][eventoJoystick].pressionado)) ||
+	   (joystick && !teclado[eventoTeclado].pressionado && joystick->direcional[0][eventoJoystick].liberado))
+	{
+        ev.tipoEvento = eventoLibera;
+        ATOR_EnviaEvento(a, &ev);
+    }
+}
+
+static void ProcessaControle(Ator *a) {
     static Evento ev;
     static C2D2_Botao *teclado = C2D2_PegaTeclas();
-    // TEsta se envia mensagens
-    if (teclado[C2D2_CIMA].pressionado) {
-        ev.tipoEvento = EVT_PRESSIONOU_CIMA;
-        ATOR_EnviaEvento(a, &ev);
-    }
-    if (teclado[C2D2_CIMA].liberado) {
-        ev.tipoEvento = EVT_LIBEROU_CIMA;
-        ATOR_EnviaEvento(a, &ev);
-    }
-    if (teclado[C2D2_BAIXO].pressionado) {
-        ev.tipoEvento = EVT_PRESSIONOU_BAIXO;
-        ATOR_EnviaEvento(a, &ev);
-    }
-    if (teclado[C2D2_BAIXO].liberado) {
-        ev.tipoEvento = EVT_LIBEROU_BAIXO;
-        ATOR_EnviaEvento(a, &ev);
-    }
-    if (teclado[C2D2_ESQUERDA].pressionado) {
-        ev.tipoEvento = EVT_PRESSIONOU_ESQ;
-        ATOR_EnviaEvento(a, &ev);
-    }
-    if (teclado[C2D2_ESQUERDA].liberado) {
-        ev.tipoEvento = EVT_LIBEROU_ESQ;
-        ATOR_EnviaEvento(a, &ev);
-    }
-    if (teclado[C2D2_DIREITA].pressionado) {
-        ev.tipoEvento = EVT_PRESSIONOU_DIR;
-        ATOR_EnviaEvento(a, &ev);
-    }
-    if (teclado[C2D2_DIREITA].liberado) {
-        ev.tipoEvento = EVT_LIBEROU_DIR;
-        ATOR_EnviaEvento(a, &ev);
-    }
-    if (teclado[C2D2_Z].pressionado) {
+	static C2D2_Joystick *joystick = C2D2_PegaJoystick(0);
+
+	ProcessaBotao(a, teclado, joystick, C2D2_CIMA, C2D2_DIR_CIMA, EVT_PRESSIONOU_CIMA, EVT_LIBEROU_CIMA);    
+	ProcessaBotao(a, teclado, joystick, C2D2_BAIXO, C2D2_DIR_BAIXO, EVT_PRESSIONOU_BAIXO, EVT_LIBEROU_BAIXO);
+	ProcessaBotao(a, teclado, joystick, C2D2_ESQUERDA, C2D2_DIR_ESQUERDA, EVT_PRESSIONOU_ESQ, EVT_LIBEROU_ESQ);
+	ProcessaBotao(a, teclado, joystick, C2D2_DIREITA, C2D2_DIR_DIREITA, EVT_PRESSIONOU_DIR, EVT_LIBEROU_DIR);
+
+	if ((teclado[C2D2_Z].pressionado) || (joystick && joystick->botoes[C2D2_JBOTAO_0].pressionado)){
         ev.tipoEvento = EVT_PRESSIONOU_BOTAO1;
         ATOR_EnviaEvento(a, &ev);
     }
+}
+
+static void InicializaJoystick()
+{
+	int numJoysticks = C2D2_ListaJoysticks();
+	if(numJoysticks > 0)
+	{
+		C2D2_LigaJoystick(0);
+	}
 }
 
 static double subPow2(double a, double b)
@@ -124,6 +125,9 @@ int main(int narg, char **valarg) {
     CA2_Inicia();
     // Inicia os personagens
     ATOR_Inicia();
+
+	InicializaJoystick();
+
     // Carrega a fonte do sistema
     unsigned int fonte = C2D2_CarregaFonte("imagens/isabelle64_alpha.png", 64);
     // Carrega a tocha
@@ -224,7 +228,9 @@ int main(int narg, char **valarg) {
                 ATOR_EnviaEvento(inimigos[i], &ev);
             }
 
-            if (dark->direcao != inimigos[i]->direcao) {
+			if(((dark->x < inimigos[i]->x) && (inimigos[i]->direcao == 180)) ||
+			   ((dark->x > inimigos[i]->x) && (inimigos[i]->direcao == 0))) 
+			{            
                 double distancia = subPow2(inimigos[i]->x, dark->x) + subPow2(inimigos[i]->y, dark->y);
                 if (distancia < energia2) {
                     ev.tipoEvento = EVT_PROXIMO_JOGADOR;
@@ -295,8 +301,8 @@ int main(int narg, char **valarg) {
         // Calcula o centro da tocha, baseado na posição do personagem no mapa
         int xmapa, ymapa;
         C2D2M_PosicaoXY(mapa, &xmapa, &ymapa);
-        int xp = dark->x - xmapa + 16 - 256;
-        int yp = dark->y - ymapa + 15 - 256;
+        int xp = (int)(dark->x - xmapa + 16 - 256);
+        int yp = (int)(dark->y - ymapa + 15 - 256);
         // Enfim, desenha a tocha
         C2D2_DesenhaSprite(tocha, 0, xp, ydesl+yp);
 
@@ -318,6 +324,8 @@ int main(int narg, char **valarg) {
             C2D2_Pausa(50);
         //C2D2M_AnimaMapa(mapa);
     }
+
+	C2D2_DesligaJoystick(0);
 
     // Apaga os personagens
     free(dark);
