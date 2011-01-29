@@ -12,6 +12,7 @@
 #include "jogo_bola.h"
 #include "lobo.h"
 #include "rato.h"
+#include "goteira.h"
 #include "jogo_coruja.h"
 
 // As dimens�es da tela desejada (cheia)
@@ -68,8 +69,9 @@ void ProcessaControle(Ator *a) {
     }
 }
 
-static double subPow2(double a, double b) {
-    return (a - b) * (a - b);
+static double subPow2(double a, double b)
+{
+	return (a - b) * (a - b);
 }
 
 int main(int narg, char **valarg) {
@@ -112,6 +114,7 @@ int main(int narg, char **valarg) {
     bool cbola = JOGO_CarregaBola();
     bool clobo = CarregaLobo();
     bool crato = CarregaRato();
+    bool cgoteira = CarregaGoteira();
     bool ccoruja = JOGO_CarregaCoruja();
 
     // As m�sicas
