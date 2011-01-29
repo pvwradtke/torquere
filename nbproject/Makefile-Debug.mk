@@ -31,6 +31,7 @@ OBJECTDIR=build/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
+	${OBJECTDIR}/jogo_coruja.o \
 	${OBJECTDIR}/jogo_darkphoenix.o \
 	${OBJECTDIR}/jogo_bola.o \
 	${OBJECTDIR}/main.o
@@ -58,6 +59,11 @@ LDLIBSOPTIONS=-lSDL -lSDL_mixer -lSDL_image -lGL -lGLU -lc2d2 -lca2 -lcator -lcm
 dist/Debug/GNU-Linux-x86/torquere: ${OBJECTFILES}
 	${MKDIR} -p dist/Debug/GNU-Linux-x86
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/torquere ${OBJECTFILES} ${LDLIBSOPTIONS} 
+
+${OBJECTDIR}/jogo_coruja.o: nbproject/Makefile-${CND_CONF}.mk jogo_coruja.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/jogo_coruja.o jogo_coruja.cpp
 
 ${OBJECTDIR}/jogo_darkphoenix.o: nbproject/Makefile-${CND_CONF}.mk jogo_darkphoenix.cpp 
 	${MKDIR} -p ${OBJECTDIR}
