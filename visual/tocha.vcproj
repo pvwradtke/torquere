@@ -185,6 +185,14 @@
 			>
 		</File>
 		<File
+			RelativePath="..\goteira.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\goteira.h"
+			>
+		</File>
+		<File
 			RelativePath="..\jogo_atores.h"
 			>
 		</File>
@@ -194,6 +202,14 @@
 		</File>
 		<File
 			RelativePath="..\jogo_bola.h"
+			>
+		</File>
+		<File
+			RelativePath="..\jogo_coruja.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\jogo_coruja.h"
 			>
 		</File>
 		<File
