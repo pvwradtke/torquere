@@ -1,16 +1,19 @@
 #include <stdio.h>
+#include <vector>
+
 #include <c2d2/chien2d2.h>
 #include <c2d2/chien2d2mapa.h>
 #include <c2d2/chien2d2primitivas.h>
 #include <c2d2/chienaudio2.h>
 #include <c2d2/ator.h>
+
 #include "jogo_atores.h"
 #include "jogo_darkphoenix.h"
 #include "jogo_bola.h"
 
 // As dimensões da tela desejada (cheia)
-#define LARGURA_TELA	640
-#define ALTURA_TELA	480
+#define LARGURA_TELA	1024
+#define ALTURA_TELA	600
 #define GRAVIDADE	250
 #define MAXGRAVIDADE	2000
 
@@ -78,6 +81,7 @@ int main(int narg, char **valarg)
 		printf("Falhou ao iniciar a Chien2D 2. Encerrando o programa.\n");
 		return 0;
 	}
+
 	// Inicia as primitivas
 	C2D2P_Inicia();
 	// Inicia os mapas
@@ -124,37 +128,24 @@ int main(int narg, char **valarg)
 	int x=60, y=60;
 	C2D2M_PrimeiroBlocoMarca(mapa, C2D2M_INICIO, &x, &y);
 	Ator *dark = ATOR_CriaAtor(DARKPHOENIX, x, y, 0);
+
 	Evento ev;
 	bool nafase=true;
-	// Procura saber quantos inimigos tem na fase
-	int numInimigos=0;
+	
+	std::vector<Ator *> inimigos;
 	if(C2D2M_PrimeiroBlocoMarca(mapa, MARCA_BOLA_DIREITA, &x, &y))
 	{
-		numInimigos++;
+		inimigos.push_back(ATOR_CriaAtor(BOLA, x, y, 0));
 		while(C2D2M_ProximoBlocoMarca(mapa, &x, &y))
-			numInimigos++;
+			inimigos.push_back(ATOR_CriaAtor(BOLA, x, y, 0));
 	}
 	if(C2D2M_PrimeiroBlocoMarca(mapa, MARCA_BOLA_ESQUERDA, &x, &y))
 	{
-		numInimigos++;
+		inimigos.push_back(ATOR_CriaAtor(BOLA, x, y, 180));
 		while(C2D2M_ProximoBlocoMarca(mapa, &x, &y))
-			numInimigos++;
+			inimigos.push_back(ATOR_CriaAtor(BOLA, x, y, 180));
 	}
-	Ator **inimigos = (Ator**)malloc(sizeof(Ator*)*numInimigos);
-	memset(inimigos, 0, numInimigos*sizeof(Ator*));
-	numInimigos=0;
-	if(C2D2M_PrimeiroBlocoMarca(mapa, MARCA_BOLA_DIREITA, &x, &y))
-	{
-		inimigos[numInimigos++]=ATOR_CriaAtor(BOLA, x, y, 0);
-		while(C2D2M_ProximoBlocoMarca(mapa, &x, &y))
-			inimigos[numInimigos++]=ATOR_CriaAtor(BOLA, x, y, 0);
-	}
-	if(C2D2M_PrimeiroBlocoMarca(mapa, MARCA_BOLA_ESQUERDA, &x, &y))
-	{
-		inimigos[numInimigos++]=ATOR_CriaAtor(BOLA, x, y, 180);
-		while(C2D2M_ProximoBlocoMarca(mapa, &x, &y))
-			inimigos[numInimigos++]=ATOR_CriaAtor(BOLA, x, y, 180);
-	}
+
 	// Coloca a música para tocar
 	CA2_TocaMusica(musicas[0], -1);
 	// Indica se e a primeira vez que vai tocar a musicado fim da fase
@@ -183,25 +174,39 @@ int main(int narg, char **valarg)
 				primeira=true;
 			}
 		}
-		for(int i=0;i<numInimigos;i++)
+
+		for(size_t i=0;i<inimigos.size();i++)
+		{
 			if(inimigos[i]!=0)
 				ATOR_ColidiuAtores(dark, inimigos[i]);
+		}
+
 		// Atualiza a lógica
 		ATOR_AplicaEstado(dark, mapa, LARGURA_TELA, ALTURA_TELA);
-		for(int i=0;i<numInimigos;i++)
+		for(size_t i=0;i<inimigos.size();i++)
+		{
 			if(inimigos[i]!=0)
 				ATOR_AplicaEstado(inimigos[i], mapa, LARGURA_TELA, ALTURA_TELA);
+		}
+
 		// Lê os controles
 		ProcessaControle(dark);
 		// Atualiza os personagens
 		ATOR_Atualiza(dark, mapa);
-		for(int i=0;i<numInimigos;i++)
+
+		for(size_t i=0;i<inimigos.size();i++)
+		{
 			if(inimigos[i]!=0)
+			{
 				if(!ATOR_Atualiza(inimigos[i], mapa))
 				{
 					free(inimigos[i]);
 					inimigos[i]=0;
 				}
+			}
+		}
+
+
 		// Centraliza o mapa no personagem principal
 		ATOR_CentraMapa(dark, mapa, LARGURA_TELA, ALTURA_TELA);
 		// Roda os eventos do jogo
@@ -221,9 +226,12 @@ int main(int narg, char **valarg)
 		C2D2M_DesenhaCamadaMapa(mapa, 2, 0, 0, 640, 480);
 		// DEsenha os personagens
 		ATOR_Desenha(dark, mapa, 0, 0);
-		for(int i=0;i<numInimigos;i++)
+		for(size_t i=0;i<inimigos.size();i++)
+		{
 			if(inimigos[i]!=0)
 				ATOR_Desenha(inimigos[i], mapa, 0, 0);
+		}
+
 		// Desenha a camada mais superior
 		C2D2M_DesenhaCamadaMapa(mapa, 3, 0, 0, 640, 480);
 		// DEsenha as mensagens
@@ -239,12 +247,14 @@ int main(int narg, char **valarg)
 			C2D2_Pausa(50);
 		C2D2M_AnimaMapa(mapa);
 	}
+
 	// Apaga os personagens
 	free(dark);
-	for(int i=0;i<numInimigos;i++)
-		if(inimigos[i]!=0)
-			free(inimigos[i]);
-	free(inimigos);
+	for(size_t i=0;i<inimigos.size();i++)
+	{		
+		free(inimigos[i]);	
+	}
+
 	// Descarrega o personagem
 	ATOR_DescarregaAtor(DARKPHOENIX);
 	// Apaga as imagens carregadas na memória
@@ -257,5 +267,6 @@ int main(int narg, char **valarg)
 	CA2_Encerra();
 	// Encerra a Chien2D 2
 	C2D2_Encerra();
+
 	return 0;
 }
