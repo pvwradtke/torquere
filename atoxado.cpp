@@ -48,10 +48,36 @@ enum
 enum CamposAuxiliaresInt
 {
 	INT_RESETA_TOCHA = 0,
-	INT_OSCILACAO_TOCHA = 1,
-	INT_BOOST_TOCHA = 2,
-	INT_TEMPO_BOOST = 3,
-	INT_SINAL_BOOST = 4
+	INT_OSCILACAO_TOCHA,
+	INT_BOOST_TOCHAX,
+	INT_TEMPO_BOOSTX,
+	INT_SINAL_BOOSTX,
+	INT_BOOST_TOCHAY,
+	INT_TEMPO_BOOSTY,
+	INT_SINAL_BOOSTY,
+	INT_ENERGIA_X,
+	INT_ENERGIA_Y
+};
+
+struct BoostInfo
+{	
+	int slotBoost;
+	int slotPasso;
+	int slotSinal;
+};
+
+static const BoostInfo BoostX = 
+{
+	INT_BOOST_TOCHAX,
+	INT_TEMPO_BOOSTX,
+	INT_SINAL_BOOSTX
+};
+
+static const BoostInfo BoostY = 
+{
+	INT_BOOST_TOCHAY,
+	INT_TEMPO_BOOSTY,
+	INT_SINAL_BOOSTY
 };
 
 enum CamposAuxiliaresReal
@@ -68,7 +94,7 @@ enum CamposAuxiliaresReal
 #define ENERGIA_MINIMA 164
 
 //Energia inicial da tocha
-#define ENERGIA_INICIAL 512
+#define ENERGIA_INICIAL 700
 
 //Valor maximo que a tocha oscila para dar o efeito visual
 #define OSCILACAO_MAX 30
@@ -79,6 +105,17 @@ enum CamposAuxiliaresReal
 #define EFEITO_GOTA_TOCHA 250
 
 #define PASSO_OSCILACAO_GOTA 6
+
+//O maximo que a tocha pode fortalecer durante uma toxada!
+#define BOOST_TOCHA_MAXIMO (ENERGIA_INICIAL+50)
+
+#define EFEITO_TOXADAX 300
+#define PASSO_TOXADAX 35
+
+#define EFEITO_TOXADAY 500
+#define PASSO_TOXADAY 100
+
+#define DANO_TOXADA_NA_TOCHA 40
 
 static bool AtualizaAtoxado(Ator *a, unsigned int mapa);
 
@@ -103,6 +140,52 @@ bool CarregaAtoxado()
 	);
 }
 
+int GetEnergiaX(Ator *a)
+{
+	return a->aux_int[INT_ENERGIA_X];
+}
+
+int GetEnergiaY(Ator *a)
+{
+	return a->aux_int[INT_ENERGIA_Y];
+}
+
+//O efeito do boost se acumula e é um valor que tem seu sinal controlado
+//Se o novo efeito tive rmesmo sinal, basta somar ambos
+//Se tiverem sinais diferentes (um aumenta e outro diminui)
+//precisamos subtrair e tratar o novo sinal
+static void LigaBoostTocha(Ator *a, int potencia, int passoAtualizacao, int sinal, const BoostInfo *boost)
+{
+	if(a->aux_int[boost->slotSinal] == sinal)
+	{
+		a->aux_int[boost->slotBoost] += potencia;		
+	}
+	else
+	{		
+		//Atual == -100, novo == 50
+		if(a->aux_int[boost->slotBoost] < potencia)
+		{
+			a->aux_int[boost->slotBoost] = potencia - a->aux_int[boost->slotBoost];
+			a->aux_int[boost->slotSinal] = sinal;
+		}
+		else
+		{
+			a->aux_int[boost->slotBoost] -= potencia;
+		}		
+	}
+
+	a->aux_int[boost->slotPasso] = passoAtualizacao;		
+	if((a->aux_int[boost->slotSinal] > 0) && (a->aux_int[boost->slotBoost] > BOOST_TOCHA_MAXIMO))
+		a->aux_int[boost->slotBoost] = BOOST_TOCHA_MAXIMO;
+
+	//printf("Boost: %d, sinal: %d\n", a->aux_int[boost->slotBoost], a->aux_int[boost->slotSinal]);
+}
+
+static void DanificaTocha(Ator *a, int valor)
+{
+	a->aux_real[REAL_ENERGIA_TOCHA] -= valor * ((rand() % 100) / 150.0f);
+}
+
 static void AtualizaColisaoAtor(Ator *a, Evento *ev, unsigned int mapa)
 {
 	switch(ev->tipoEvento)
@@ -114,10 +197,9 @@ static void AtualizaColisaoAtor(Ator *a, Evento *ev, unsigned int mapa)
 					break;
 
 				case GOTA:
-					a->aux_int[INT_BOOST_TOCHA] = EFEITO_GOTA_TOCHA;
-					a->aux_int[INT_TEMPO_BOOST] = PASSO_OSCILACAO_GOTA;
-					a->aux_int[INT_SINAL_BOOST] = -1;
-					a->aux_real[REAL_ENERGIA_TOCHA] -= DANO_GOTA * ((rand() % 100) / 150.0f);
+					LigaBoostTocha(a, EFEITO_GOTA_TOCHA, PASSO_OSCILACAO_GOTA, -1, &BoostX);
+					LigaBoostTocha(a, EFEITO_GOTA_TOCHA, PASSO_OSCILACAO_GOTA, -1, &BoostY);
+					DanificaTocha(a, DANO_GOTA);					
 					break;
 
 				default:
@@ -128,9 +210,16 @@ static void AtualizaColisaoAtor(Ator *a, Evento *ev, unsigned int mapa)
 	}
 }
 
-static void AtualizaTochada(Actor *a, Event *ev, unsigned int mapa)
+static void AtualizaTochada(Ator *a, Evento *ev, unsigned int mapa)
 {
-
+	switch(ev->tipoEvento)
+	{
+		case EVT_PRESSIONOU_BOTAO2:
+			LigaBoostTocha(a, EFEITO_TOXADAX, PASSO_TOXADAX, 1, &BoostX);
+			LigaBoostTocha(a, EFEITO_TOXADAY, PASSO_TOXADAY, -1, &BoostY);
+			DanificaTocha(a, DANO_TOXADA_NA_TOCHA);
+			break;
+	}
 }
 
 static void AtualizaVoo(Ator *a, Evento *ev, unsigned int mapa)
@@ -179,12 +268,32 @@ static void AtualizaVoo(Ator *a, Evento *ev, unsigned int mapa)
 			break;
 
 		default:
-			AtualizaColisaoAtor(a, ev, mapa);
+			AtualizaColisaoAtor(a, ev, mapa);			
 			break;
 	}
 }
 
+static void AtualizaBoost(Ator *a, const BoostInfo *info)
+{
+	a->aux_int[info->slotBoost] -= a->aux_int[info->slotPasso];
+	if(a->aux_int[info->slotBoost] < 0)
+		a->aux_int[info->slotBoost] = 0;
+}
 
+static void ZeraBoost(Ator *a, const BoostInfo *info)
+{
+	a->aux_int[info->slotBoost] = 0;
+	a->aux_int[info->slotPasso] = 0;
+	a->aux_int[info->slotSinal] = 1;
+}
+
+static void AtualizaEnergia(Ator *a, int index, const BoostInfo *info)
+{
+	a->aux_int[index] = (int)(a->aux_real[REAL_ENERGIA_TOCHA] + (rand() % OSCILACAO_MAX));
+	a->aux_int[index] += a->aux_int[info->slotBoost] * a->aux_int[info->slotSinal];
+	if(a->aux_int[index] <= ENERGIA_MINIMA)
+		a->aux_int[index] = ENERGIA_MINIMA;
+}
 
 static void AtualizaTocha(Ator *a, Evento *ev, unsigned int mapa)
 {
@@ -196,18 +305,20 @@ static void AtualizaTocha(Ator *a, Evento *ev, unsigned int mapa)
 
 			a->temporizadores[TEMPORIZADOR_TOCHA] = TEMPO_TOCHA;
 			a->aux_real[REAL_ENERGIA_TOCHA] -= 0.1f;	
-			a->energia = (int)(a->aux_real[REAL_ENERGIA_TOCHA] + (rand() % OSCILACAO_MAX));
-			a->energia += a->aux_int[INT_BOOST_TOCHA] * a->aux_int[INT_SINAL_BOOST];
-			if(a->energia <= ENERGIA_MINIMA)
-				a->energia = ENERGIA_MINIMA;
 
-			a->aux_int[INT_BOOST_TOCHA] -= a->aux_int[INT_TEMPO_BOOST];
-			if(a->aux_int[INT_BOOST_TOCHA] < 0)
-				a->aux_int[INT_BOOST_TOCHA] = 0;
+			AtualizaEnergia(a, INT_ENERGIA_X, &BoostX);
+			AtualizaEnergia(a, INT_ENERGIA_Y, &BoostY);
+
+			//printf("%f %f\n", a->aux_int[INT_BOOST_TOCHAX], a->aux_int[INT_BOOST_TOCHAY]);
+
+			AtualizaBoost(a, &BoostX);			
+			AtualizaBoost(a, &BoostY);
 
 			if(a->aux_real[REAL_ENERGIA_TOCHA] <= ENERGIA_MINIMA)
 			{				
-				a->energia = ENERGIA_MINIMA / 2;
+				a->aux_int[INT_ENERGIA_X] = ENERGIA_MINIMA / 2;
+				ZeraBoost(a, &BoostX);
+				ZeraBoost(a, &BoostY);				
 				a->aux_int[INT_RESETA_TOCHA] = true;
 
 				ATOR_TrocaEstado(a, ATOXADO_MORRENDO, false);
@@ -231,7 +342,10 @@ static bool AtualizaAtoxado(Ator *a, unsigned int mapa)
 			ATOR_TrocaEstado(a, ATOXADO_INICIO, false);
 			a->vidas=3;
 			a->aux_real[REAL_ENERGIA_TOCHA] = ENERGIA_INICIAL;
-			a->energia = ENERGIA_INICIAL;
+			ZeraBoost(a, &BoostX);
+			ZeraBoost(a, &BoostY);
+			a->aux_int[INT_ENERGIA_X] = ENERGIA_INICIAL;
+			a->aux_int[INT_ENERGIA_Y] = ENERGIA_INICIAL;
 			a->temporizadores[TEMPORIZADOR_TOCHA] = TEMPO_TOCHA;
 			break;
 
@@ -287,6 +401,7 @@ static bool AtualizaAtoxado(Ator *a, unsigned int mapa)
 					default:
 						AtualizaTocha(a, &ev, mapa);
 						AtualizaColisaoAtor(a, &ev, mapa);
+						AtualizaTochada(a, &ev, mapa);
 						break;
 				}
 			}
@@ -326,6 +441,7 @@ static bool AtualizaAtoxado(Ator *a, unsigned int mapa)
 					default:
 						AtualizaTocha(a, &ev, mapa);
 						AtualizaVoo(a, &ev, mapa);
+						AtualizaTochada(a, &ev, mapa);
 						break;
 				}
 			}
@@ -359,6 +475,7 @@ static bool AtualizaAtoxado(Ator *a, unsigned int mapa)
 					default:
 						AtualizaTocha(a, &ev, mapa);
 						AtualizaVoo(a, &ev, mapa);
+						AtualizaTochada(a, &ev, mapa);
 						break;
 				}
 			}
@@ -412,6 +529,7 @@ static bool AtualizaAtoxado(Ator *a, unsigned int mapa)
 					default:
 						AtualizaTocha(a, &ev, mapa);
 						AtualizaColisaoAtor(a, &ev, mapa);
+						AtualizaTochada(a, &ev, mapa);
 						break;
 				}
 			}
@@ -470,7 +588,7 @@ static bool AtualizaAtoxado(Ator *a, unsigned int mapa)
 							{
 								a->aux_int[INT_RESETA_TOCHA] = false;
 								a->aux_real[REAL_ENERGIA_TOCHA] = ENERGIA_INICIAL;
-								a->energia = ENERGIA_INICIAL;
+								a->aux_int[INT_ENERGIA_X] = ENERGIA_INICIAL;
 							}
 
 							ATOR_TrocaEstado(a, ATOXADO_PARADO, false);
