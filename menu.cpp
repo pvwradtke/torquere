@@ -102,8 +102,8 @@ void menu_carrega()
     backajuda = C2D2_CarregaSpriteSet("./menu/backajuda.jpg",0,0);
     backsobre = C2D2_CarregaSpriteSet("./menu/backsobre.jpg",0,0);
     backsobre2 = C2D2_CarregaSpriteSet("./menu/backsobre2.jpg",0,0);
-    backgameover= C2D2_CarregaSpriteSet("./menu/gameover.jpg",0,0);
-    backwin= C2D2_CarregaSpriteSet("./menu/win.jpg",0,0);   
+    backgameover= C2D2_CarregaSpriteSet("./menu/gameover.png",0,0);
+    backwin= C2D2_CarregaSpriteSet("./menu/win.png",0,0);   
 
     quadrointro = C2D2_CarregaSpriteSet("./menu/quadrointro.jpg",0,0);
     quadroeremita = C2D2_CarregaSpriteSet("./menu/quadroeremita.jpg",0,0);
@@ -181,7 +181,7 @@ void menu_splash()
         if(tempo > 0)
             tempo --;
         else
-            estado_atual=TELA_EREMITA;
+            estado_atual=TELA_INTRO;
 
         C2D2_LimpaTela();
         C2D2_DesenhaSprite(splash,0,0,ydesl);
