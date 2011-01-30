@@ -143,6 +143,8 @@ static void LiberaInimigos(VectorInimigos *vec)
 
 static void DesenhaTocha(Ator *dark, int mapa, int tocha)
 {
+	static int alfa = 255;
+
 	// Calcula o centro da tocha, baseado na posição do personagem no mapa
     int xmapa, ymapa;
     C2D2M_PosicaoXY(mapa, &xmapa, &ymapa);
@@ -160,13 +162,13 @@ static void DesenhaTocha(Ator *dark, int mapa, int tocha)
     int xp = (int)(dark->x - xmapa + 0 - tamTochaDiv2X);
     int yp = (int)(dark->y - ymapa + 15 - tamTochaDiv2Y);
 
-	C2D2_DesenhaSpriteCentro(tocha, 0, xc, ydesl + yc, (int)tamTochaFixedX, (int)tamTochaFixedY);
+	C2D2_DesenhaSpriteCentroAlfa(tocha, 0, xc, ydesl + yc, (int)tamTochaFixedX, (int)tamTochaFixedY, 255, 255, 255, alfa);
 
-	// Desenha as barras pretas da tocha
-    C2D2P_RetanguloPintado(0,ydesl, LARGURA_TELA, ydesl+yp, 0, 0, 0);
-    C2D2P_RetanguloPintado(0,(int)(ydesl+tamTochaY+yp), LARGURA_TELA, ydesl+ALTURA_TELA, 0, 0, 0);
-    C2D2P_RetanguloPintado(0,ydesl+yp, xp, (int)(ydesl+yp+tamTochaY), 0, 0, 0);
-    C2D2P_RetanguloPintado((int)(xp+tamTochaX),ydesl+yp, LARGURA_TELA, (int)(ydesl+yp+tamTochaY), 0, 0, 0);		
+	// Desenha as barras pretas da tocha	
+    C2D2P_RetanguloPintadoAlfa(0,ydesl, LARGURA_TELA, ydesl+yp, 0, 0, 0, alfa);
+    C2D2P_RetanguloPintadoAlfa(0,(int)(ydesl+tamTochaY+yp), LARGURA_TELA, ydesl+ALTURA_TELA, 0, 0, 0, alfa);
+    C2D2P_RetanguloPintadoAlfa(0,ydesl+yp, xp, (int)(ydesl+yp+tamTochaY), 0, 0, 0, alfa);
+    C2D2P_RetanguloPintadoAlfa((int)(xp+tamTochaX),ydesl+yp, LARGURA_TELA, (int)(ydesl+yp+tamTochaY), 0, 0, 0, alfa);
 }
 
 int main(int narg, char **valarg) {
