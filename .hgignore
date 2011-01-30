@@ -4,3 +4,4 @@ glob:visual/tocha.suo
 glob:visual/tocha.vcproj.bcsnote.bcsanches.user
 glob:build/
 glob:dist/Debug/GNU-Linux-x86/torquere.orig
+glob:visual/Release/
