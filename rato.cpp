@@ -11,13 +11,13 @@ static bool AtualizaRato(Ator *a, unsigned int mapa);
 Animacao animRato[] ={
 	// Ordem: n�mero de quadros, tempo entre os quadros, vetor com a seq��ncia de quadros
 	//  direita: 0
-	{1, 1, {1}},
+	{1, 1, {0}},
 	//  esquerda: 1
-	{1, 1, {4}},
+	{1, 1, {0}},
 	// ATOXADO_MORRENDO: 9
-	{1, 1, {12}},
+	{1, 1, {0}},
 	// bola escondida
-	{1, 20, {0}}
+	{10, 8, {1,1,1,1,1,1,1,1,1,2}}
 };
 
 char *sonsRato[]={
@@ -47,13 +47,13 @@ bool CarregaRato()
 {
 	return ATOR_CarregaAtorEstatico(
 		RATO, 
-		"imagens/darkphoenix.png", 
-		32, 
-		42, 
-		4, 
-		2,
-		24, 
-		39, 
+		"imagens/rato.png", 
+		64, 
+		28, 
+		1, 
+		3,
+		64, 
+		28, 
 		animRato, 
 		false, 
 		sonsRato,

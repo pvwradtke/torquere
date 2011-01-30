@@ -224,14 +224,6 @@
 			>
 		</File>
 		<File
-			RelativePath="..\jogo_bola.cpp"
-			>
-		</File>
-		<File
-			RelativePath="..\jogo_bola.h"
-			>
-		</File>
-		<File
 			RelativePath="..\jogo_coruja.cpp"
 			>
 		</File>

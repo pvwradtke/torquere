@@ -21,11 +21,9 @@ enum
 Animacao animGota[] ={
 	// Ordem: n�mero de quadros, tempo entre os quadros, vetor com a seq��ncia de quadros
 	//  direita: 0
-	{1, 1, {1}},
+	{1, 1, {0}},
 	//  esquerda: 1
-	{1, 1, {4}},
-	// ATOXADO_MORRENDO: 9
-	{1, 1, {12}}
+	{1, 1, {1}}
 };
 
 char *sonsGota[]={
@@ -43,13 +41,13 @@ bool CarregaGota()
 {
 	return ATOR_CarregaAtorEstatico(
 		GOTA, 
-		"imagens/darkphoenix.png", 
+		"imagens/gota.png", 
 		32, 
-		42, 
-		4, 
-		2,
-		24, 
-		39, 
+		32, 
+		2, 
+		1,
+		32, 
+		32, 
 		animGota, 
 		false, 
 		sonsGota,
@@ -81,7 +79,7 @@ static bool AtualizaGota(Ator *a, unsigned int mapa)
 			{
 				a->temporizadores[0] = Intervalo();
 				a->estado.subestado = ESTADO_RODANDO;
-				ATOR_TrocaAnimacao(a, 0);
+				ATOR_TrocaAnimacao(a, 1);
 			}
 			while(ATOR_ProximoEvento(a, &ev))
 			{
@@ -100,7 +98,7 @@ static bool AtualizaGota(Ator *a, unsigned int mapa)
 				a->temporizadores[0] = TEMPO_CRESCIMENTO_GOTA;
 				a->estado.subestado = ESTADO_RODANDO;
 
-				ATOR_TrocaAnimacao(a, 1);
+				ATOR_TrocaAnimacao(a, 0);
 			}
 			while(ATOR_ProximoEvento(a, &ev))
 			{
