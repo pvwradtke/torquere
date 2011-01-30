@@ -63,7 +63,8 @@ enum CamposAuxiliaresInt
 	INT_TEMPO_BOOSTY,
 	INT_SINAL_BOOSTY,
 	INT_ENERGIA_X,
-	INT_ENERGIA_Y
+	INT_ENERGIA_Y,
+        INT_DIA
 };
 
 struct BoostInfo
@@ -347,6 +348,15 @@ static void AtualizaTocha(Ator *a, Evento *ev, unsigned int mapa)
 			LigaBoostTocha(a, EFEITO_GOTA_TOCHA, PASSO_OSCILACAO_GOTA, -1, &BoostX);
 			LigaBoostTocha(a, EFEITO_GOTA_TOCHA, PASSO_OSCILACAO_GOTA, -1, &BoostY);
 			break;
+            case EVT_AMANHECEU:
+                a->temporizadores[TEMPORIZADOR_TOCHA]=0;
+                break;
+            case EVT_ANOITECEU:
+                ZeraBoost(a, &BoostX);
+                ZeraBoost(a, &BoostY);
+                a->temporizadores[TEMPORIZADOR_TOCHA]=3;
+                break;
+
 	}
 }
 

@@ -47,6 +47,8 @@ enum
     EVT_TOCHADA,
 	EVT_PEGA_MADEIRA,
 	EVT_FOI_PEGO,
+        EVT_ANOITECEU,
+        EVT_AMANHECEU,
 	EVT_MAX
 };
 
