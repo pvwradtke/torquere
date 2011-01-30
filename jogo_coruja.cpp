@@ -30,7 +30,7 @@ Animacao animCoruja[] = {
     // Atacando esquerda
     {1, 5, {3}},
     // escondida
-    {2, 10, {4,0}}
+    {10, 10, {4,4,4,4,4,4,4,4,4,5}}
 };
 
 // A matriz de eventos do personagem
@@ -65,9 +65,9 @@ bool JOGO_CarregaCoruja() {
     if(ATOR_CarregaAtorEstatico(
 		CORUJA, 
 		"imagens/coruja.png", 
-		80, 30, 
+		80, 40, 
 		2, 3,
-        80, 30, 
+        80, 40, 
 		animCoruja, 
 		false, 
 		sonsCorujao, 

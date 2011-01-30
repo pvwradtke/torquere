@@ -24,9 +24,9 @@ char *sonsMorcego[]={
 Animacao animMorcego[] = {
     // Ordem: n�mero de quadros, tempo entre os quadros, vetor com a seq��ncia de quadros
     // VOANDO_DIREITA : 0
-    {1, 1, {0}},
+    {4, 5, {0,1,2,3}},
     // VOANDO_ESQUERDA
-    {1, 1, {1}}	
+    {4, 5, {5,4,7,6}}	
 };
 
 // A matriz de eventos do personagem
@@ -37,7 +37,7 @@ acao acoesMorcego[MORCEGO_ESTADOS][EVT_MAX];
 
 bool JOGO_CarregaMorcego() {
     if(ATOR_CarregaAtorEstatico(MORCEGO, "imagens/morcego.png", 
-		50, 30, 2, 3,
+		50, 30, 2, 5,
             50, 30, animMorcego, false, sonsMorcego, 5, &AtualizaMorcego))
     {
         // Associa as ações a matriz
