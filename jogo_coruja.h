@@ -25,5 +25,8 @@ bool AtualizaCoruja(Ator *a, unsigned int mapa);
 // A ação de evento da tochada
  bool AcaoCorujatochada(Ator* a, unsigned int mapa, Evento *evt);
 
+ bool AcaoCorujaAmanheceu(Ator* a, unsigned int mapa, Evento *evt);
+ bool AcaoCorujaAnoiteceu(Ator* a, unsigned int mapa, Evento *evt);
+
 
 #endif
