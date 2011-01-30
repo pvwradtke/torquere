@@ -174,7 +174,7 @@ int main(int narg, char **valarg) {
     int altura = ALTURA_TELA;
     if (ydesl)
         altura = ALTURA_TELA2;
-    if (C2D2_Inicia(LARGURA_TELA, ydesl == 0 ? ALTURA_TELA : ALTURA_TELA2, C2D2_JANELA, C2D2_DESENHO_OPENGL, "Darkphoenix - O Baixinho Invocado"))
+    if (C2D2_Inicia(LARGURA_TELA, ydesl == 0 ? ALTURA_TELA : ALTURA_TELA2, C2D2_JANELA, C2D2_DESENHO_OPENGL, "Torquere"))
         printf("Iniciou a Chien2D 2 com sucesso\n");
     else {
         printf("Falhou ao iniciar a Chien2D 2. Encerrando o programa.\n");

@@ -176,9 +176,7 @@ static void LigaBoostTocha(Ator *a, int potencia, int passoAtualizacao, int sina
 
 	a->aux_int[boost->slotPasso] = passoAtualizacao;		
 	if((a->aux_int[boost->slotSinal] > 0) && (a->aux_int[boost->slotBoost] > BOOST_TOCHA_MAXIMO))
-		a->aux_int[boost->slotBoost] = BOOST_TOCHA_MAXIMO;
-
-	//printf("Boost: %d, sinal: %d\n", a->aux_int[boost->slotBoost], a->aux_int[boost->slotSinal]);
+		a->aux_int[boost->slotBoost] = BOOST_TOCHA_MAXIMO;	
 }
 
 static void DanificaTocha(Ator *a, int valor)
@@ -307,9 +305,7 @@ static void AtualizaTocha(Ator *a, Evento *ev, unsigned int mapa)
 			a->aux_real[REAL_ENERGIA_TOCHA] -= 0.1f;	
 
 			AtualizaEnergia(a, INT_ENERGIA_X, &BoostX);
-			AtualizaEnergia(a, INT_ENERGIA_Y, &BoostY);
-
-			//printf("%f %f\n", a->aux_int[INT_BOOST_TOCHAX], a->aux_int[INT_BOOST_TOCHAY]);
+			AtualizaEnergia(a, INT_ENERGIA_Y, &BoostY);			
 
 			AtualizaBoost(a, &BoostX);			
 			AtualizaBoost(a, &BoostY);
@@ -327,6 +323,10 @@ static void AtualizaTocha(Ator *a, Evento *ev, unsigned int mapa)
 
 		case EVT_PEGA_MADEIRA:
 			a->aux_real[REAL_ENERGIA_TOCHA] = ENERGIA_INICIAL;
+
+			//Um efeito para a tocha não aumentar de uma vez
+			LigaBoostTocha(a, EFEITO_GOTA_TOCHA, PASSO_OSCILACAO_GOTA, -1, &BoostX);
+			LigaBoostTocha(a, EFEITO_GOTA_TOCHA, PASSO_OSCILACAO_GOTA, -1, &BoostY);
 			break;
 	}
 }
