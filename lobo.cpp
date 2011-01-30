@@ -7,7 +7,7 @@
 //Animacao 
 Animacao animLobo[] =
 {
-	// Ordem: número de quadros, tempo entre os quadros, vetor com a seqüência de quadros
+	// Ordem: nï¿½mero de quadros, tempo entre os quadros, vetor com a seqï¿½ï¿½ncia de quadros
 	// BOLA_PULA ESQUERDA : 0
 	{10, 5, {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}},
 	// BOLA_PULA direita : 1
@@ -28,8 +28,20 @@ InfoAnimal infoLobo = {
 	//tempo ataque
 	90,
 	//tempo esconderijo
-	300
+	300,
+        // NÃºmero de sons do lobo
+        6
 };
+
+char *sonsLobo[]={
+	"audio/lobo1.ogg",
+        "audio/lobo2.ogg",
+        "audio/lobo3.ogg",
+        "audio/lobo4.ogg",
+        "audio/lobo5.ogg",
+        "audio/lobo6.ogg"
+};
+
 
 static bool AtualizaLobo(Ator *a, unsigned int mapa);
 
@@ -46,8 +58,8 @@ bool CarregaLobo()
 		64, 
 		animLobo, 
 		false, 
-		0, 
-		0, 
+		sonsLobo,
+		6,
 		&AtualizaLobo
 	);
 }

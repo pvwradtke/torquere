@@ -142,11 +142,11 @@ static void DesenhaTocha(Ator *dark, int mapa, int tocha, unsigned char alpha) {
     C2D2M_PosicaoXY(mapa, &xmapa, &ymapa);
 
     double tamTochaX = GetEnergiaX(dark);
-    double tamTochaFixedX = tamTochaX * 1.05;
+    double tamTochaFixedX = tamTochaX * 1.01;
     double tamTochaDiv2X = tamTochaX / 2;
 
     double tamTochaY = GetEnergiaY(dark);
-    double tamTochaFixedY = tamTochaY * 1.05;
+    double tamTochaFixedY = tamTochaY * 1.01;
     double tamTochaDiv2Y = tamTochaY / 2;
 
     double xc = (int) (dark->x - xmapa + 0);
@@ -302,15 +302,23 @@ int main(int narg, char **valarg) {
         if(tempoPeriodo > TEMPO_MUDA_DIA_NOITE && diaNoite == JOGO_NOITE)
             alpha = 255;
         else if(tempoPeriodo <= TEMPO_MUDA_DIA_NOITE && diaNoite == JOGO_NOITE)
-            alpha = (unsigned char)(255*((double)tempoPeriodo/(double)TEMPO_MUDA_DIA_NOITE));
+        {
+            double total = TEMPO_MUDA_DIA_NOITE;
+            double parcial = 255*tempoPeriodo;
+            parcial /= total;
+            alpha = parcial;
+        }
         // Se for dia, o alpha funciona ao contrário, é zero a maior parte do tempo,
         // e aumenta no último minuto
         else if(tempoPeriodo > TEMPO_MUDA_DIA_NOITE && diaNoite == JOGO_DIA)
             alpha = 0;
         else // Só sobrou o caso de ser dia e tempo < TEMPO_MUDA_DIA_NOITE
         {
-            double diferenca = 255.0*((double)tempoPeriodo/(double)TEMPO_MUDA_DIA_NOITE);
-            alpha = (unsigned char)(255-diferenca);
+            double total = TEMPO_MUDA_DIA_NOITE;
+            double parcial = tempoPeriodo;
+            double diferenca = 255*parcial;
+            diferenca /=total;
+            alpha = 255-diferenca;
         }
         // Testa as colisoes
         if (ATOR_ColidiuBlocoCenario(dark, mapa, C2D2M_MORTE)) {
