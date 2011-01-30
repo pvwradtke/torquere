@@ -13,18 +13,22 @@ Animacao animLobo[] =
 	// BOLA_PULA direita : 1
 	{10, 5, {9, 8, 7, 6, 5, 4, 3, 2, 1, 0}},
 	// bola morreu: 2
-	{2, 20, {0,5}}
+	{2, 20, {0,5}},
+	// bola escondida
+	{1, 20, {0}}
 };
 
 InfoAnimal infoLobo = {
 	//velocidade
 	2,
 	//velocidade ataque
-	10,
+	9,
 	//tempo Bote
 	50,
 	//tempo ataque
-	100
+	90,
+	//tempo esconderijo
+	300
 };
 
 static bool AtualizaLobo(Ator *a, unsigned int mapa);

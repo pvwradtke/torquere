@@ -30,6 +30,19 @@ int ydesl = 0;
 
 typedef std::vector<Ator *> VectorInimigos;
 
+static double subPow2(double a, double b)
+{
+	return (a - b) * (a - b);
+}
+
+static bool JogadorProximoInimigo(Ator *dark, Ator *inimigo)
+{
+	double energia2 = (GetEnergiaX(dark) * GetEnergiaX(dark)) * 0.25;
+	double distancia = subPow2(inimigo->x, dark->x) + subPow2(inimigo->y, dark->y);
+                
+	return distancia < energia2;
+}
+
 static void ProcessaBotao(Ator *a, C2D2_Botao *teclado, C2D2_Joystick *joystick, int eventoTeclado, int eventoJoystick, int eventoPressionou, int eventoLibera)
 {
 	Evento ev;
@@ -50,7 +63,7 @@ static void ProcessaBotao(Ator *a, C2D2_Botao *teclado, C2D2_Joystick *joystick,
     }
 }
 
-static void ProcessaControle(Ator *a) {
+static void ProcessaControle(Ator *a, VectorInimigos *inimigos) {
     static Evento ev;
     static C2D2_Botao *teclado = C2D2_PegaTeclas();
 	static C2D2_Joystick *joystick = C2D2_PegaJoystick(0);
@@ -65,10 +78,24 @@ static void ProcessaControle(Ator *a) {
         ATOR_EnviaEvento(a, &ev);
     }
 
+	//toxada!
 	if ((teclado[C2D2_LCTRL].pressionado) || (joystick && joystick->botoes[C2D2_JBOTAO_1].pressionado)){
         ev.tipoEvento = EVT_PRESSIONOU_BOTAO2;
         ATOR_EnviaEvento(a, &ev);
-    }
+
+		for (size_t i = 0; i < inimigos->size(); ++i) {
+			Ator *inimigo = (*inimigos)[i];
+			if(inimigo == NULL)
+				continue;
+
+			
+			if(JogadorProximoInimigo(a, inimigo))
+			{
+				ev.tipoEvento = EVT_TOCHADA;
+				ATOR_EnviaEvento(inimigo, &ev);
+			}
+		}
+    }	
 }
 
 static void InicializaJoystick()
@@ -78,11 +105,6 @@ static void InicializaJoystick()
 	{
 		C2D2_LigaJoystick(0);
 	}
-}
-
-static double subPow2(double a, double b)
-{
-	return (a - b) * (a - b);
 }
 
 static void CriaInimigo(VectorInimigos *vec, int tipoMarca, int tipoAtor, int mapa)
@@ -252,7 +274,7 @@ int main(int narg, char **valarg) {
 		//
 		//Verifica se existem inimigos proximo do personagem
 		//Em energia armazenamos a "potencia" da tocha
-		double energia2 = (GetEnergiaX(dark) * GetEnergiaX(dark)) * 0.25;
+		
         for (size_t i = 0; i < inimigos.size(); ++i) {
             if (ATOR_ColidiuBlocoCenario(inimigos[i], mapa, MARCA_FIMDIREITA)) {
                 ev.tipoEvento = EVT_COLIDIU_FIM_DIREITA;
@@ -267,8 +289,8 @@ int main(int narg, char **valarg) {
 			if(((dark->x < inimigos[i]->x) && (inimigos[i]->direcao == 180)) ||
 			   ((dark->x > inimigos[i]->x) && (inimigos[i]->direcao == 0))) 
 			{            
-                double distancia = subPow2(inimigos[i]->x, dark->x) + subPow2(inimigos[i]->y, dark->y);
-                if (distancia < energia2) {
+                if(JogadorProximoInimigo(dark, inimigos[i]))
+				{
                     ev.tipoEvento = EVT_PROXIMO_JOGADOR;
                     ATOR_EnviaEvento(inimigos[i], &ev);
                 }
@@ -288,7 +310,7 @@ int main(int narg, char **valarg) {
         }
 
         // L� os controles
-        ProcessaControle(dark);
+        ProcessaControle(dark, &inimigos);
         // Atualiza os personagens
         ATOR_Atualiza(dark, mapa);
 
