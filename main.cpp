@@ -213,7 +213,12 @@ int main(int narg, char **valarg) {
     C2D2M_CamadaMarcas(mapa, 0, 1);
     // Indica a gravidade a aplicar no mapa
     C2D2M_GravidadeMapa(mapa, GRAVIDADE, MAXGRAVIDADE);
-
+    // Pega o local do portão
+    int xPortao, yPortao;
+    C2D2M_PrimeiroBlocoMarca(mapa, MARCA_PORTAO, &xPortao, &yPortao);
+    // Calcula o bloco inicial do portao
+    xPortao = xPortao/64;
+    yPortao /=64;
     // Carrega o personagem
     bool cdark = CarregaAtoxado();
     bool cbola = JOGO_CarregaBola();
@@ -288,10 +293,13 @@ int main(int narg, char **valarg) {
                     if (inimigos[i] != 0)
                         ATOR_EnviaEvento(inimigos[i], &evt);
                 }
+                // Fecha o portão
+                C2D2M_AlteraBloco(mapa, 0, xPortao, yPortao, C2D2M_SOLIDO);
+                C2D2M_AlteraBloco(mapa, 0, xPortao, yPortao+1, C2D2M_SOLIDO);
             }
             else
             {
-				printf("AMANHECEU\n");
+		printf("AMANHECEU\n");
                 // Se era noite, toca o som do portão abrindo, muda o portão para abrindp
                 // muda a variável e, mais importante, conta um dia de sobrevivencia
                 numNoites++;
@@ -307,6 +315,9 @@ int main(int narg, char **valarg) {
                     if (inimigos[i] != 0)
                         ATOR_EnviaEvento(inimigos[i], &evt);
                 }
+                // Fecha o portão
+                C2D2M_AlteraBloco(mapa, 0, xPortao, yPortao, 0);
+                C2D2M_AlteraBloco(mapa, 0, xPortao, yPortao+1, 0);
 
             }
         }
