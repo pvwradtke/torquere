@@ -108,7 +108,7 @@ bool AtualizaAnimal(Ator *a, InfoAnimal *info, unsigned int mapa)
 					a->velocidade=0;
 					a->estado.subestado=ESTADO_RODANDO;
 					a->temporizadores[0] = info->tempoBote;			
-					printf("preparando bote: %x\n", (int)a);
+					//printf("preparando bote: %x\n", (int)a);
 				}
 
 				while(ATOR_ProximoEvento(a, &ev))
@@ -135,7 +135,7 @@ bool AtualizaAnimal(Ator *a, InfoAnimal *info, unsigned int mapa)
 					a->estado.subestado=ESTADO_RODANDO;
 					
 					a->temporizadores[0] = info->tempoAtaque;
-					printf("inciando ataque: %x\n", (int)a);
+					//printf("inciando ataque: %x\n", (int)a);
 				}
 
 				while(ATOR_ProximoEvento(a, &ev))
@@ -157,7 +157,7 @@ bool AtualizaAnimal(Ator *a, InfoAnimal *info, unsigned int mapa)
 			case ANIMAL_ESCONDIDO:
 				if(a->estado.subestado == ESTADO_INICIO)
 				{
-					printf("Vou me esconder %d\n", (int)a);
+					//printf("Vou me esconder %d\n", (int)a);
 					a->velocidade = 0;		
 					a->invulneravel = 1;
 					a->estado.subestado = ESTADO_RODANDO;
