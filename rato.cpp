@@ -15,18 +15,22 @@ Animacao animRato[] ={
 	//  esquerda: 1
 	{1, 1, {4}},
 	// ATOXADO_MORRENDO: 9
-	{1, 1, {12}}
+	{1, 1, {12}},
+	// bola escondida
+	{1, 20, {0}}
 };
 
 InfoAnimal infoRato = {
 	//velocidade
 	1,
 	//velocidade ataque
-	8,
+	7,
 	//tempo bote
 	60,
 	//tempo ataque
-	100
+	50,
+	//tempo esconderijo
+	300
 };
 
 

@@ -9,14 +9,17 @@ enum
 	ANIMAL_ANDANDO=ATOR_PROG_INI, 
 	ANIMAL_MORRENDO,
 	ANIMAL_PREPARA_ATAQUE,
-	ANIMAL_ATACANDO
+	ANIMAL_ATACANDO,
+	ANIMAL_ESCONDIDO,
+	ANIMAL_PROG_INI
 };
 
 enum
 {
 	ANIM_ANDANDO_DIREITA,
 	ANIM_ANDANDO_ESQUERDA,
-	ANIM_MORRENDO
+	ANIM_MORRENDO,
+	ANIM_ESCONDIDO
 };
 
 struct InfoAnimal
@@ -26,6 +29,7 @@ struct InfoAnimal
 
 	int tempoBote;
 	int tempoAtaque;
+	int tempoEsconderijo;
 };
 
 bool AtualizaAnimal(Ator *a, InfoAnimal *info, unsigned int mapa);

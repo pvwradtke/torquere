@@ -68,6 +68,10 @@ bool AtualizaAnimal(Ator *a, InfoAnimal *info, unsigned int mapa)
 						ATOR_TrocaEstado(a, ANIMAL_PREPARA_ATAQUE, false);
 						break;
 
+					case EVT_TOCHADA:
+						ATOR_TrocaEstado(a, ANIMAL_ESCONDIDO, false);
+						break;
+
 					default:
 						AtualizaDirecao(a, &ev, mapa);
 						break;
@@ -103,7 +107,8 @@ bool AtualizaAnimal(Ator *a, InfoAnimal *info, unsigned int mapa)
 				{
 					a->velocidade=0;
 					a->estado.subestado=ESTADO_RODANDO;
-					a->temporizadores[0] = info->tempoBote;					
+					a->temporizadores[0] = info->tempoBote;			
+					printf("preparando bote: %x\n", (int)a);
 				}
 
 				while(ATOR_ProximoEvento(a, &ev))
@@ -113,7 +118,11 @@ bool AtualizaAnimal(Ator *a, InfoAnimal *info, unsigned int mapa)
 						case EVT_TEMPO:
 						if(ev.subtipo==0)
 							ATOR_TrocaEstado(a, ANIMAL_ATACANDO, false);
-						break;						
+						break;		
+
+						case EVT_TOCHADA:
+							ATOR_TrocaEstado(a, ANIMAL_ESCONDIDO, false);
+							break;
 					}
 				}
 				break;
@@ -126,6 +135,7 @@ bool AtualizaAnimal(Ator *a, InfoAnimal *info, unsigned int mapa)
 					a->estado.subestado=ESTADO_RODANDO;
 					
 					a->temporizadores[0] = info->tempoAtaque;
+					printf("inciando ataque: %x\n", (int)a);
 				}
 
 				while(ATOR_ProximoEvento(a, &ev))
@@ -143,6 +153,34 @@ bool AtualizaAnimal(Ator *a, InfoAnimal *info, unsigned int mapa)
 					}
 				}
 				break;
+
+			case ANIMAL_ESCONDIDO:
+				if(a->estado.subestado == ESTADO_INICIO)
+				{
+					printf("Vou me esconder %d\n", (int)a);
+					a->velocidade = 0;		
+					a->invulneravel = 1;
+					a->estado.subestado = ESTADO_RODANDO;
+					a->temporizadores[0] = info->tempoEsconderijo;
+
+					ATOR_TrocaAnimacao(a, ANIM_ESCONDIDO);
+				}
+
+				while(ATOR_ProximoEvento(a, &ev))
+				{
+					switch(ev.tipoEvento)
+					{						
+						case EVT_TEMPO:
+							if(ev.subtipo==0)
+							{				
+								a->invulneravel = 0;
+								ATOR_TrocaEstado(a, ANIMAL_ANDANDO, false);
+							}
+							break;
+					}
+				}
+
+
 	}
 
 	return true;

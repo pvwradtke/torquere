@@ -221,6 +221,14 @@
 			>
 		</File>
 		<File
+			RelativePath="..\jogo_morcego.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\jogo_morcego.h"
+			>
+		</File>
+		<File
 			RelativePath="..\lobo.cpp"
 			>
 		</File>
