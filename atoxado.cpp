@@ -1,12 +1,13 @@
 #include <c2d2/chien2d2.h>
+#include <stdlib.h>
 
 #include "jogo_atores.h"
 #include "atoxado.h"
 
 //Animacao 
-// Vetor com as animações da nave (2 no total)
+// Vetor com as animaï¿½ï¿½es da nave (2 no total)
 Animacao animAtoxado[] ={
-	// Ordem: número de quadros, tempo entre os quadros, vetor com a seqüência de quadros
+	// Ordem: nï¿½mero de quadros, tempo entre os quadros, vetor com a seqï¿½ï¿½ncia de quadros
 	// ATOXADO_PARADO direita: 0
 	{1, 1, {1}},
 	// ATOXADO_PARADO esquerda: 1
@@ -32,9 +33,15 @@ Animacao animAtoxado[] ={
 };
 
 char *sons[]={
-	"audio/pula.wav",
-	"audio/bate.wav",
-	"audio/morreu.wav"
+	"audio/pula.ogg",
+	"audio/cai.ogg",
+	"audio/ouch1.ogg",
+        "audio/ouch2.ogg",
+        "audio/ouch3.ogg",
+        "audio/ouch4.ogg",
+        "audio/ouch5.ogg",
+        "audio/tochada1.ogg",
+        "audio/tochada2.ogg"
 };
 
 enum 
@@ -119,7 +126,7 @@ enum CamposAuxiliaresReal
 
 static bool AtualizaAtoxado(Ator *a, unsigned int mapa);
 
-// A função que carrega o DarkPhoenix.
+// A funï¿½ï¿½o que carrega o DarkPhoenix.
 //
 bool CarregaAtoxado()
 {
@@ -135,7 +142,7 @@ bool CarregaAtoxado()
 		animAtoxado, 
 		false, 
 		sons, 
-		3, 
+		9,
 		&AtualizaAtoxado
 	);
 }
@@ -150,7 +157,7 @@ int GetEnergiaY(Ator *a)
 	return a->aux_int[INT_ENERGIA_Y];
 }
 
-//O efeito do boost se acumula e é um valor que tem seu sinal controlado
+//O efeito do boost se acumula e ï¿½ um valor que tem seu sinal controlado
 //Se o novo efeito tive rmesmo sinal, basta somar ambos
 //Se tiverem sinais diferentes (um aumenta e outro diminui)
 //precisamos subtrair e tratar o novo sinal
@@ -210,10 +217,13 @@ static void AtualizaColisaoAtor(Ator *a, Evento *ev, unsigned int mapa)
 
 static void AtualizaTochada(Ator *a, Evento *ev, unsigned int mapa)
 {
+    int efeito;
 	switch(ev->tipoEvento)
 	{
 		case EVT_PRESSIONOU_BOTAO2:
-			LigaBoostTocha(a, EFEITO_TOXADAX, PASSO_TOXADAX, 1, &BoostX);
+                    efeito = rand()%2+7;
+                    ATOR_TocaEfeitoTela(a, efeito, mapa);
+                    LigaBoostTocha(a, EFEITO_TOXADAX, PASSO_TOXADAX, 1, &BoostX);
 			LigaBoostTocha(a, EFEITO_TOXADAY, PASSO_TOXADAY, -1, &BoostY);
 			DanificaTocha(a, DANO_TOXADA_NA_TOCHA);
 			break;
@@ -324,17 +334,17 @@ static void AtualizaTocha(Ator *a, Evento *ev, unsigned int mapa)
 		case EVT_PEGA_MADEIRA:
 			a->aux_real[REAL_ENERGIA_TOCHA] = ENERGIA_INICIAL;
 
-			//Um efeito para a tocha não aumentar de uma vez
+			//Um efeito para a tocha nï¿½o aumentar de uma vez
 			LigaBoostTocha(a, EFEITO_GOTA_TOCHA, PASSO_OSCILACAO_GOTA, -1, &BoostX);
 			LigaBoostTocha(a, EFEITO_GOTA_TOCHA, PASSO_OSCILACAO_GOTA, -1, &BoostY);
 			break;
 	}
 }
 
-// A função para fazer a lógica do DarkPhoenix
+// A funï¿½ï¿½o para fazer a lï¿½gica do DarkPhoenix
 //
 // Data: 04/09/2008
-// Última atualização: 04/09/2008
+// ï¿½ltima atualizaï¿½ï¿½o: 04/09/2008
 //
 static bool AtualizaAtoxado(Ator *a, unsigned int mapa)
 {
@@ -354,9 +364,9 @@ static bool AtualizaAtoxado(Ator *a, unsigned int mapa)
 			break;
 
 		case ATOXADO_INICIO:
-			// Indica para qual direção está olhando
+			// Indica para qual direï¿½ï¿½o estï¿½ olhando
 			a->olhandoPara=0;
-			// Guarda a posição inicial
+			// Guarda a posiï¿½ï¿½o inicial
 			a->aux_real[REAL_X] = a->x;
 			a->aux_real[REAL_Y] = a->y;
 			ATOR_TrocaEstado(a, ATOXADO_PARADO, false);
@@ -543,7 +553,8 @@ static bool AtualizaAtoxado(Ator *a, unsigned int mapa)
 			{
 				ATOR_Impulsiona(a, VPULO*1.5);
 				ATOR_TrocaAnimacao(a, 9);
-				ATOR_TocaEfeitoTela(a, 2, mapa);
+                                int efeito = (random()%5)+2;
+				ATOR_TocaEfeitoTela(a, efeito, mapa);
 				a->temporizadores[TEMPORIZADOR_MORRENDO] = 120;
 				a->estado.subestado = ESTADO_RODANDO;
 				a->velocidade=0;

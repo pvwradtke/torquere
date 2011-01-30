@@ -260,7 +260,7 @@ int main(int narg, char **valarg) {
 	CriaInimigo(&inimigos, MARCA_MORCEGO, MORCEGO, mapa);
 
     // Coloca a m�sica para tocar
-    CA2_TocaMusica(musicas[0], -1);
+    //CA2_TocaMusica(musicas[0], -1);
 
     // Indica se e a primeira vez que vai tocar a musicado fim da fase
     bool primeira = false;
