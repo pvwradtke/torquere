@@ -4,19 +4,10 @@
 #include "jogo_atores.h"
 #include "lobo.h"
 
-char *sonsLobo[]={
-	"audio/lobo1.ogg",
-	"audio/lobo2.ogg",
-	"audio/lobo3.ogg",
-	"audio/lobo4.ogg",
-        "audio/lobo5.ogg",
-	"audio/lobo6.ogg"
-};
-
 //Animacao 
 Animacao animLobo[] =
 {
-	// Ordem: nï¿½mero de quadros, tempo entre os quadros, vetor com a seqï¿½ï¿½ncia de quadros
+	// Ordem: número de quadros, tempo entre os quadros, vetor com a seqüência de quadros
 	// BOLA_PULA ESQUERDA : 0
 	{10, 5, {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}},
 	// BOLA_PULA direita : 1
@@ -37,9 +28,7 @@ InfoAnimal infoLobo = {
 	//tempo ataque
 	90,
 	//tempo esconderijo
-	300,
-        // Quantidade de sons
-        6
+	300
 };
 
 static bool AtualizaLobo(Ator *a, unsigned int mapa);
@@ -48,17 +37,17 @@ bool CarregaLobo()
 {
 	return ATOR_CarregaAtorEstatico(
 		LOBO, 
-		"imagens/inimigobola.png", 
-		28, 
-		28, 
-		0, 
-		0,
+		"imagens/lobo.png", 
+		400, 
+		400, 
+		4, 
+		4,
 		28, 
 		28, 
 		animLobo, 
 		false, 
-		sonsLobo,
-		6,
+		0, 
+		0, 
 		&AtualizaLobo
 	);
 }
