@@ -37,7 +37,7 @@ bool CarregaItemMadeira()
 
 bool AtualizaItemMadeira(Ator *a, unsigned int mapa)
 {
-	//Evento ev;
+	Evento ev;
 	switch(a->estado.estado)
 	{
 		case ATOR_NASCENDO:			
@@ -45,6 +45,14 @@ bool AtualizaItemMadeira(Ator *a, unsigned int mapa)
 			break;
 
 		case ITEM_ESPERANDO:
+			while(ATOR_ProximoEvento(a, &ev))
+			{
+				switch(ev.tipoEvento)
+				{
+					case EVT_FOI_PEGO:
+						return false;
+				}
+			}
 			break;
 	}
 

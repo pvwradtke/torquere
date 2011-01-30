@@ -63,7 +63,7 @@ static void ProcessaBotao(Ator *a, C2D2_Botao *teclado, C2D2_Joystick *joystick,
     }
 }
 
-static void ProcessaControle(Ator *a, VectorInimigos *inimigos) {
+static void ProcessaControle(Ator *a, VectorInimigos *inimigos, Ator *pauPersonagem) {
     static Evento ev;
     static C2D2_Botao *teclado = C2D2_PegaTeclas();
 	static C2D2_Joystick *joystick = C2D2_PegaJoystick(0);
@@ -96,6 +96,14 @@ static void ProcessaControle(Ator *a, VectorInimigos *inimigos) {
 			}
 		}
     }	
+	
+	if(pauPersonagem && ((teclado[C2D2_X].pressionado) || (joystick && joystick->botoes[C2D2_JBOTAO_2].pressionado))){
+        ev.tipoEvento = EVT_PEGA_MADEIRA;
+        ATOR_EnviaEvento(a, &ev);
+
+		ev.tipoEvento = EVT_FOI_PEGO;
+		ATOR_EnviaEvento(pauPersonagem, &ev);
+	}
 }
 
 static void InicializaJoystick()
@@ -191,6 +199,10 @@ int main(int narg, char **valarg) {
     // Carrega o mapa
     //unsigned int mapa = C2D2M_CarregaMapaMappy("fases/Aula04-Mapa.FMP", "fases/Aula04-tileset.png");
     unsigned int mapa = C2D2M_CarregaMapaMappy("fases/atocha.fmp", "fases/tileset.png");
+
+	//Icone que mostra na tela quando o toxado poder segurar no pau
+	unsigned int spritePegaPau = C2D2_CarregaSpriteSet("./imagens/coruja_beta.png", 96, 32);
+
     // D� as velocidades. As duas �ltimas devem ser 1. As demais, incrementa de 1 em 1
     int numcamadas = 4;
     C2D2M_VelocidadeCamadaMapa(mapa, 3, 1);
@@ -243,16 +255,18 @@ int main(int narg, char **valarg) {
 
 	CriaInimigo(&inimigos, MARCA_GOTA, GOTA, mapa);
 	CriaInimigo(&inimigos, MARCA_MADEIRA, ITEM_MADEIRA, mapa);
-        CriaInimigo(&inimigos, MARCA_MORCEGO, MORCEGO, mapa);
+	CriaInimigo(&inimigos, MARCA_MORCEGO, MORCEGO, mapa);
 
     // Coloca a m�sica para tocar
     CA2_TocaMusica(musicas[0], -1);
+
     // Indica se e a primeira vez que vai tocar a musicado fim da fase
     bool primeira = false;
+	Ator *pauPersonagem = NULL;
     while (!teclado[C2D2_ESC].pressionado && nafase) {
         C2D2_LimpaTela();
 
-        // Testa as colis�es
+        // Testa as colisoes
         if (ATOR_ColidiuBlocoCenario(dark, mapa, C2D2M_MORTE)) {
             ev.tipoEvento = EVT_COLIDIU_ARMADILHA;
             ATOR_EnviaEvento(dark, &ev);
@@ -268,14 +282,15 @@ int main(int narg, char **valarg) {
                 CA2_TocaMusica(musicas[1], -1);
                 primeira = true;
             }
-        }
+        }		
 
 		//
 		//
-		//Verifica se existem inimigos proximo do personagem
-		//Em energia armazenamos a "potencia" da tocha
-		
+		//Verifica se existem inimigos proximo do personagem		
         for (size_t i = 0; i < inimigos.size(); ++i) {
+			if(inimigos[i] == 0)
+				continue;
+
             if (ATOR_ColidiuBlocoCenario(inimigos[i], mapa, MARCA_FIMDIREITA)) {
                 ev.tipoEvento = EVT_COLIDIU_FIM_DIREITA;
                 ATOR_EnviaEvento(inimigos[i], &ev);
@@ -295,22 +310,30 @@ int main(int narg, char **valarg) {
                     ATOR_EnviaEvento(inimigos[i], &ev);
                 }
             }
-        }
 
-        for (size_t i = 0; i < inimigos.size(); i++) {
-            if (inimigos[i] != 0)
-                ATOR_ColidiuAtores(dark, inimigos[i]);
-        }
+			if((inimigos[i]->tipo == ITEM_MADEIRA))
+			{
+				if(ATOR_ColidiuAtores(dark, inimigos[i]))
+				{
+					//Mostra sprite					
+					pauPersonagem = inimigos[i];
+				}
+			}
+			else
+			{
+				ATOR_ColidiuAtores(dark, inimigos[i]);
+			}
+        }        
 
-        // Atualiza a l�gica
+        // Atualiza a logica
         ATOR_AplicaEstado(dark, mapa, LARGURA_TELA, ALTURA_TELA);
         for (size_t i = 0; i < inimigos.size(); i++) {
             if (inimigos[i] != 0)
                 ATOR_AplicaEstado(inimigos[i], mapa, LARGURA_TELA, ALTURA_TELA);
         }
 
-        // L� os controles
-        ProcessaControle(dark, &inimigos);
+        // Le os controles
+        ProcessaControle(dark, &inimigos, pauPersonagem);
         // Atualiza os personagens
         ATOR_Atualiza(dark, mapa);
 
@@ -356,7 +379,13 @@ int main(int narg, char **valarg) {
         if (dark->estado.estado == ATOXADO_VITORIA)
             C2D2_DesenhaTexto(fonte, LARGURA_TELA / 2, ALTURA_TELA / 2 + ydesl, "Fase Completa!", C2D2_TEXTO_CENTRALIZADO);       
 
-		DesenhaTocha(dark, mapa, tocha);        
+		DesenhaTocha(dark, mapa, tocha);   
+
+		if(pauPersonagem != NULL)
+		{
+			C2D2_DesenhaSprite(spritePegaPau, 0, 800, 200);
+			pauPersonagem = NULL;
+		}
 
         // Desenha as barras pretas do wide em 4:3 se necessário
         if (ydesl) {

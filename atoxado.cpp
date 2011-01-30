@@ -324,6 +324,10 @@ static void AtualizaTocha(Ator *a, Evento *ev, unsigned int mapa)
 				ATOR_TrocaEstado(a, ATOXADO_MORRENDO, false);
 			}
 			break;
+
+		case EVT_PEGA_MADEIRA:
+			a->aux_real[REAL_ENERGIA_TOCHA] = ENERGIA_INICIAL;
+			break;
 	}
 }
 
