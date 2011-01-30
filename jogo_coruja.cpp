@@ -136,6 +136,7 @@ bool AtualizaCoruja(Ator *a, unsigned int mapa) {
         case CORUJA_ESCONDIDA:
             if (a->estado.subestado == ESTADO_INICIO) {
                 a->velocidade = 0;
+				a->invulneravel = 1;
                 a->estado.subestado = ESTADO_RODANDO;
                 ATOR_TrocaAnimacao(a, ANIM_CORUJA_ESCONDIDA);
                 a->velocidade=0;
@@ -180,7 +181,10 @@ bool AtualizaCoruja(Ator *a, unsigned int mapa) {
      if(a->estado.estado == CORUJA_ARMADA && evt->tipoEvento == EVT_TEMPO && evt->subtipo==0)
          ATOR_TrocaEstado(a, CORUJA_ATACANDO, false);
      else if(a->estado.estado == CORUJA_ESCONDIDA && evt->tipoEvento == EVT_TEMPO && evt->subtipo==0)
+	 {
+		 a->invulneravel = 0;
          ATOR_TrocaEstado(a, CORUJA_DESLOCANDO, false);
+	 }
      return true;
  }
 
