@@ -5,8 +5,11 @@
 
 enum {
     ANIM_CORUJA_DIREITA, 
-ANIM_CORUJA_ARMADA_DIREITA, ANIM_CORUJA_ATACANDO_DIREITA,
-    ANIM_CORUJA_ESQUERDA, ANIM_CORUJA_ARMADA_ESQUERDA, ANIM_CORUJA_ATACANDO_ESQUERDA,
+	ANIM_CORUJA_ARMADA_DIREITA, 
+	ANIM_CORUJA_ATACANDO_DIREITA,
+    ANIM_CORUJA_ESQUERDA, 
+	ANIM_CORUJA_ARMADA_ESQUERDA, 
+	ANIM_CORUJA_ATACANDO_ESQUERDA,
     ANIM_CORUJA_ESCONDIDA
 };
 
@@ -15,26 +18,19 @@ ANIM_CORUJA_ARMADA_DIREITA, ANIM_CORUJA_ATACANDO_DIREITA,
 Animacao animCoruja[] = {
     // Ordem: n�mero de quadros, tempo entre os quadros, vetor com a seq��ncia de quadros
     // VOANDO_DIREITA : 0
-    {1, 1,
-        {0}},
+    {1, 5, {2}},
     // Armada direita 1
-    {1, 1,
-        {0}},
+    {2, 5, {1, 0}},
     // Atacando direita
-    {1, 1,
-        {0}},
+    {1, 5, {2}},
     // VOANDO_ESQUERDA
-    {1, 1,
-        {1}},
+    {1, 5, {3}},
     // Armada esquerda
-    {1, 1,
-        {1}},
+    {2, 5, {1, 0}},
     // Atacando esquerda
-    {1, 1,
-        {1}},
-    // bola morreu: 2
-    {1, 1,
-        {2}}
+    {1, 5, {3}},
+    // escondida
+    {2, 10, {4,0}}
 };
 
 // A matriz de eventos do personagem
@@ -66,8 +62,18 @@ static bool AtualizaCoruja(Ator *a, unsigned int mapa);
 //
 
 bool JOGO_CarregaCoruja() {
-    if(ATOR_CarregaAtorEstatico(CORUJA, "imagens/coruja_beta.png", 32, 32, 0, 0,
-            32, 32, animCoruja, false, sonsCorujao, 4, &AtualizaCoruja))
+    if(ATOR_CarregaAtorEstatico(
+		CORUJA, 
+		"imagens/coruja.png", 
+		80, 30, 
+		2, 3,
+        80, 30, 
+		animCoruja, 
+		false, 
+		sonsCorujao, 
+		4, 
+		&AtualizaCoruja)
+	)
     {
         // Associa as ações a matriz
         memset(acoes, 0, sizeof(acao)*CORUJA_ESTADOS*EVT_JOGO_PROG);
