@@ -42,9 +42,9 @@ acao acoes[CORUJA_ESTADOS][EVT_MAX];
 
 char *sonsCorujao[]={
 	"audio/coruja1.ogg",
-        "audio/coruja2.ogg",
-        "audio/coruja3.ogg",
-        "audio/coruja4.ogg"
+    "audio/coruja2.ogg",
+    "audio/coruja3.ogg",
+    "audio/coruja4.ogg"
 };
 
 // A fun��o que carrega o DarkPhoenix.
@@ -61,6 +61,7 @@ bool JOGO_CarregaCoruja() {
         acoes[CORUJA_DESLOCANDO][EVT_COLIDIU_FIM_DIREITA] = &AcaoCorujaFimDireitaEsquerda;
         acoes[CORUJA_DESLOCANDO][EVT_COLIDIU_FIM_ESQUERDA] = &AcaoCorujaFimDireitaEsquerda;
         acoes[CORUJA_ESCONDIDA][EVT_TEMPO] = &AcaoCorujaTemporizador;
+		acoes[CORUJA_ESCONDIDA][EVT_ANOITECEU] = &AcaoCorujaAnoiteceu;
         acoes[CORUJA_ARMADA][EVT_TEMPO] = &AcaoCorujaTemporizador;
         acoes[CORUJA_DESLOCANDO][EVT_PROXIMO_JOGADOR] = &AcaoCorujaProximaJogador;
         acoes[CORUJA_DESLOCANDO][EVT_TOCHADA] = &AcaoCorujatochada;
@@ -95,6 +96,10 @@ bool AtualizaCoruja(Ator *a, unsigned int mapa) {
                     ATOR_TrocaAnimacao(a, ANIM_CORUJA_DIREITA);
                 else
                     ATOR_TrocaAnimacao(a, ANIM_CORUJA_ESQUERDA);
+
+				//setado flag de dia?
+				if(a->aux_int[2])
+					ATOR_TrocaEstado(a, CORUJA_ESCONDIDA, false);
             }
             break;
 
@@ -192,7 +197,7 @@ bool AtualizaCoruja(Ator *a, unsigned int mapa) {
      // Testa se estava armada, o evento é de tempo e se o temporizador é 0
      if(a->estado.estado == CORUJA_ARMADA && evt->tipoEvento == EVT_TEMPO && evt->subtipo==0)
          ATOR_TrocaEstado(a, CORUJA_ATACANDO, false);
-     else if(a->estado.estado == CORUJA_ESCONDIDA && evt->tipoEvento == EVT_TEMPO && evt->subtipo==0)
+     else if(a->estado.estado == CORUJA_ESCONDIDA && evt->tipoEvento == EVT_TEMPO && evt->subtipo==0 && !(a->aux_int[2]))
 	 {
 		 a->invulneravel = 0;
          ATOR_TrocaEstado(a, CORUJA_DESLOCANDO, false);
@@ -216,4 +221,25 @@ bool AtualizaCoruja(Ator *a, unsigned int mapa) {
          ATOR_TrocaEstado(a, CORUJA_ESCONDIDA, false);
      return true;
 
+ }
+
+ bool AcaoCorujaAmanheceu(Ator* a, unsigned int mapa, Evento *evt)
+ {
+	 //apenas corujas se deslocando podem se esconder
+	 if(a->estado.estado == CORUJA_DESLOCANDO)
+		ATOR_TrocaEstado(a, CORUJA_ESCONDIDA, false);	 
+
+	 a->aux_int[2] = true;
+	 return true;
+ }
+
+ bool AcaoCorujaAnoiteceu(Ator* a, unsigned int mapa, Evento *evt)
+ {
+	 a->aux_int[2] = false;
+	 if(a->estado.estado != CORUJA_ESCONDIDA)
+		 return true;
+
+	 a->temporizadores[0] = 300 + (rand() %200);
+
+	 return true;
  }

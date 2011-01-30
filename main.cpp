@@ -275,6 +275,7 @@ int main(int narg, char **valarg) {
             // Se dia, toca o som do portão fechando, coloca o portão fechado e muda a variável
             if(diaNoite == JOGO_DIA)
             {
+				printf("ANOITECEU\n");
                 CA2_TocaEfeito(somPortaoFecha, 0);
                 diaNoite = JOGO_NOITE;
                 // Muda o portão
@@ -284,12 +285,13 @@ int main(int narg, char **valarg) {
                 ATOR_EnviaEvento(dark, &evt);
                 // Avisa os inimigos
                 for (size_t i = 0; i < inimigos.size(); ++i) {
-                    if (inimigos[i] == 0)
+                    if (inimigos[i] != 0)
                         ATOR_EnviaEvento(inimigos[i], &evt);
                 }
             }
             else
             {
+				printf("AMANHECEU\n");
                 // Se era noite, toca o som do portão abrindo, muda o portão para abrindp
                 // muda a variável e, mais importante, conta um dia de sobrevivencia
                 numNoites++;
@@ -302,7 +304,7 @@ int main(int narg, char **valarg) {
                 ATOR_EnviaEvento(dark, &evt);
                 // Avisa os inimigos
                 for (size_t i = 0; i < inimigos.size(); ++i) {
-                    if (inimigos[i] == 0)
+                    if (inimigos[i] != 0)
                         ATOR_EnviaEvento(inimigos[i], &evt);
                 }
 
