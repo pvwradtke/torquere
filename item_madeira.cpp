@@ -15,7 +15,7 @@ Animacao animItemMadeira[] =
 {
 	// Ordem: n�mero de quadros, tempo entre os quadros, vetor com a seq��ncia de quadros
 	//  direita: 0
-	{1, 1, {1}}	
+	{1, 1, {0}}	
 };
 
 static bool AtualizaItemMadeira(Ator *a, unsigned int mapa);
@@ -24,13 +24,13 @@ bool CarregaItemMadeira()
 {
 	return ATOR_CarregaAtorEstatico(
 		ITEM_MADEIRA,
-		"imagens/darkphoenix.png", 
+		"imagens/pau.png", 
+		15, 
 		32, 
-		42, 
-		4, 
-		2,
-		24, 
-		39, 
+		1, 
+		1,
+		15, 
+		32, 
 		animItemMadeira, 
 		false, 
 		sonsMadeira,

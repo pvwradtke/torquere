@@ -8,14 +8,14 @@
 Animacao animLobo[] =
 {
 	// Ordem: n�mero de quadros, tempo entre os quadros, vetor com a seq��ncia de quadros
-	// BOLA_PULA ESQUERDA : 0
-	{10, 5, {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}},
-	// BOLA_PULA direita : 1
-	{10, 5, {9, 8, 7, 6, 5, 4, 3, 2, 1, 0}},
+	// BOLA_PULA direita : 0
+	{8, 5, {0, 1, 2, 3, 4, 5, 6, 7}},
+	// BOLA_PULA esquerda : 1
+	{8, 5, {8, 9, 10, 11, 12, 13, 14, 15}},
 	// bola morreu: 2
 	{2, 20, {0,5}},
 	// bola escondida
-	{1, 20, {0}}
+	{10, 10, {16,16,16,16,16,16,16,16,16,17}}
 };
 
 InfoAnimal infoLobo = {
@@ -53,7 +53,7 @@ bool CarregaLobo()
 		64, 
 		64, 
 		4, 
-		4,
+		5,
 		64, 
 		64, 
 		animLobo, 
