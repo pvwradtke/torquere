@@ -17,7 +17,8 @@ enum
 	CORUJA,
 	MORCEGO,	
 	GOTA,
-	ITEM_MADEIRA
+	ITEM_MADEIRA,
+	CACHOEIRA
 };
 
 // A enumera��o das marcas
