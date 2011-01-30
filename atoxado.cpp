@@ -9,21 +9,21 @@
 Animacao animAtoxado[] ={
 	// Ordem: n�mero de quadros, tempo entre os quadros, vetor com a seq��ncia de quadros
 	// ATOXADO_PARADO direita: 0
-	{1, 1, {1}},
-	// ATOXADO_PARADO esquerda: 1
-	{1, 1, {4}},
-	// ATOXADO_ANDANDO direita: 2
-	{4, 10, {0, 1, 2, 1}},
-	// ATOXADO_ANDANDO esquerda: 3
-	{4, 10, {3, 4, 3, 5}},
-	// ATOXADO_PULANDO direita: 4
-	{1, 1, {2}},
-	// ATOXADO_PULANDO esquerda: 5
 	{1, 1, {3}},
+	// ATOXADO_PARADO esquerda: 1
+	{1, 1, {8}},
+	// ATOXADO_ANDANDO direita: 2
+	{6, 5, {3, 4, 5, 0, 1, 2}},
+	// ATOXADO_ANDANDO esquerda: 3
+	{6, 5, {8, 7, 6, 11, 10, 9}},
+	// ATOXADO_PULANDO direita: 4
+	{1, 1, {0}},
+	// ATOXADO_PULANDO esquerda: 5
+	{1, 1, {11}},
 	// ATOXADO_CAINDO direita: 6
-	{2, 5, {0, 2}},
+	{1, 1, {0}},
 	// ATOXADO_CAINDO esquerda: 7
-	{2, 5, {3, 5}},
+	{1, 1, {11}},
 	// ATOXADO_VITORIA: 8
 	{2, 30, {9, 10}},
 	// ATOXADO_MORRENDO: 9
@@ -36,12 +36,12 @@ char *sons[]={
 	"audio/pula.ogg",
 	"audio/cai.ogg",
 	"audio/ouch1.ogg",
-        "audio/ouch2.ogg",
-        "audio/ouch3.ogg",
-        "audio/ouch4.ogg",
-        "audio/ouch5.ogg",
-        "audio/tochada1.ogg",
-        "audio/tochada2.ogg"
+    "audio/ouch2.ogg",
+    "audio/ouch3.ogg",
+    "audio/ouch4.ogg",
+    "audio/ouch5.ogg",
+    "audio/tochada1.ogg",
+    "audio/tochada2.ogg"
 };
 
 enum 
@@ -124,6 +124,8 @@ enum CamposAuxiliaresReal
 
 #define DANO_TOXADA_NA_TOCHA 40
 
+#define DANO_CACHOEIRA 5
+
 static bool AtualizaAtoxado(Ator *a, unsigned int mapa);
 
 // A fun��o que carrega o DarkPhoenix.
@@ -132,13 +134,13 @@ bool CarregaAtoxado()
 {
 	return ATOR_CarregaAtorEstatico(
 		ATOXADO, 
-		"imagens/darkphoenix.png", 
-		32, 
-		42, 
-		4, 
+		"imagens/player.png", 
+		90, 
+		90, 
+		6, 
 		2,
-		24, 
-		39, 
+		28, 
+		28, 
 		animAtoxado, 
 		false, 
 		sons, 
@@ -182,7 +184,8 @@ static void LigaBoostTocha(Ator *a, int potencia, int passoAtualizacao, int sina
 	}
 
 	a->aux_int[boost->slotPasso] = passoAtualizacao;		
-	if((a->aux_int[boost->slotSinal] > 0) && (a->aux_int[boost->slotBoost] > BOOST_TOCHA_MAXIMO))
+	//if((a->aux_int[boost->slotSinal] > 0) && (a->aux_int[boost->slotBoost] > BOOST_TOCHA_MAXIMO))
+	if(a->aux_int[boost->slotBoost] > BOOST_TOCHA_MAXIMO)
 		a->aux_int[boost->slotBoost] = BOOST_TOCHA_MAXIMO;	
 }
 
@@ -205,6 +208,12 @@ static void AtualizaColisaoAtor(Ator *a, Evento *ev, unsigned int mapa)
 					LigaBoostTocha(a, EFEITO_GOTA_TOCHA, PASSO_OSCILACAO_GOTA, -1, &BoostX);
 					LigaBoostTocha(a, EFEITO_GOTA_TOCHA, PASSO_OSCILACAO_GOTA, -1, &BoostY);
 					DanificaTocha(a, DANO_GOTA);					
+					break;
+
+				case CACHOEIRA:
+					LigaBoostTocha(a, EFEITO_GOTA_TOCHA/6, PASSO_OSCILACAO_GOTA, -1, &BoostX);
+					LigaBoostTocha(a, EFEITO_GOTA_TOCHA/6, PASSO_OSCILACAO_GOTA, -1, &BoostY);
+					DanificaTocha(a, DANO_CACHOEIRA);
 					break;
 
 				default:
@@ -355,6 +364,7 @@ static bool AtualizaAtoxado(Ator *a, unsigned int mapa)
 			// Muda para o estado adequado
 			ATOR_TrocaEstado(a, ATOXADO_INICIO, false);
 			a->vidas=3;
+			//a->invulneravel = 1;
 			a->aux_real[REAL_ENERGIA_TOCHA] = ENERGIA_INICIAL;
 			ZeraBoost(a, &BoostX);
 			ZeraBoost(a, &BoostY);
