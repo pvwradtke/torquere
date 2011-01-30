@@ -1,13 +1,18 @@
 #include <stdio.h>
+#include <c2d2/chienaudio2.h>
+#include <c2d2/ator.h>
 
 #include "cachoeira.h"
-
 #include "jogo_atores.h"
 
 Animacao animCachoeira[] ={
-	// Ordem: número de quadros, tempo entre os quadros, vetor com a seqüência de quadros
+	// Ordem: nï¿½mero de quadros, tempo entre os quadros, vetor com a seqï¿½ï¿½ncia de quadros
 	//  direita: 0
 	{1, 1, {1}}	
+};
+
+char *sonsCachoeira[]={
+	"audio/cachoeira.ogg"
 };
 
 static bool AtualizaCachoeira(Ator *a, unsigned int mapa);
@@ -25,8 +30,8 @@ bool CarregaCachoeira()
 		39, 
 		animCachoeira, 
 		false, 
-		0, 
-		0, 
+		sonsCachoeira,
+		1,
 		&AtualizaCachoeira
 	);
 }
@@ -51,10 +56,12 @@ static bool AtualizaCachoeira(Ator *a, unsigned int mapa)
 				{
 					case EVT_FOCO_TELA:
 						printf("cahcoeira\n");
+                                                a->aux_int[0] = ATOR_TocaEfeitoLoop(a, 0, 0, -1);
 						break;
 
 					case EVT_PERDE_FOCO_TELA:
 						printf("cahcoeira foi-se\n");
+                                                CA2_CortaEfeito(a->aux_int[0], 1000);
 						break;
 				}
 			}

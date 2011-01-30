@@ -19,13 +19,22 @@ enum
 };
 
 Animacao animGota[] ={
-	// Ordem: número de quadros, tempo entre os quadros, vetor com a seqüência de quadros
+	// Ordem: nï¿½mero de quadros, tempo entre os quadros, vetor com a seqï¿½ï¿½ncia de quadros
 	//  direita: 0
 	{1, 1, {1}},
 	//  esquerda: 1
 	{1, 1, {4}},
 	// ATOXADO_MORRENDO: 9
 	{1, 1, {12}}
+};
+
+char *sonsGota[]={
+	"audio/pingo1.ogg",
+        "audio/pingo2.ogg",
+        "audio/pingo3.ogg",
+        "audio/pingo4.ogg",
+        "audio/pingo5.ogg",
+        "audio/pingo6.ogg"
 };
 
 static bool AtualizaGota(Ator *a, unsigned int mapa);
@@ -43,8 +52,8 @@ bool CarregaGota()
 		39, 
 		animGota, 
 		false, 
-		0, 
-		0, 
+		sonsGota,
+		6,
 		&AtualizaGota
 	);
 }
@@ -121,6 +130,8 @@ static bool AtualizaGota(Ator *a, unsigned int mapa)
 						a->x = a->aux_real[0];
 						a->y = a->aux_real[1];
 						ATOR_TrocaEstado(a, GOTA_ESCONDIDA, false);
+                                                if(a->naTela)
+                                                    ATOR_TocaEfeito(a, rand()%6, mapa);
 						break;
 				}
 			}

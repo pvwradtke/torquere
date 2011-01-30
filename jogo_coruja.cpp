@@ -52,7 +52,7 @@ char *sonsCorujao[]={
 
 bool JOGO_CarregaCoruja() {
     if(ATOR_CarregaAtorEstatico(CORUJA, "imagens/coruja_beta.png", 32, 32, 0, 0,
-            32, 32, animCoruja, false, 0, 0, &AtualizaCoruja))
+            32, 32, animCoruja, false, sonsCorujao, 4, &AtualizaCoruja))
     {
         // Associa as ações a matriz
         memset(acoes, 0, sizeof(acao)*CORUJA_ESTADOS*EVT_JOGO_PROG);
@@ -131,7 +131,10 @@ bool AtualizaCoruja(Ator *a, unsigned int mapa) {
                     // Sobe a coruja
                     a->y-=4;
                     if(--a->aux_int[0] == 0)
+                    {
                         ATOR_TrocaEstado(a, CORUJA_DESLOCANDO, false);
+                        a->temporizadores[0]=120;
+                    }
                 }
                 else
                 {
@@ -200,7 +203,7 @@ bool AtualizaCoruja(Ator *a, unsigned int mapa) {
  // A ação de evento de visualização do jogador
  bool AcaoCorujaProximaJogador(Ator* a, unsigned int mapa, Evento *evt)
  {
-     if(a->estado.estado == CORUJA_DESLOCANDO && evt->tipoEvento == EVT_PROXIMO_JOGADOR)
+     if(a->estado.estado == CORUJA_DESLOCANDO && evt->tipoEvento == EVT_PROXIMO_JOGADOR && a->temporizadores[0]==0)
          ATOR_TrocaEstado(a, CORUJA_ATACANDO, false);
      return true;
  }

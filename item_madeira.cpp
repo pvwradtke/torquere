@@ -7,9 +7,13 @@ enum
 	ITEM_ESPERANDO = ATOR_PROG_INI	
 };
 
+char *sonsMadeira[]={
+	"audio/madeira.ogg"
+};
+
 Animacao animItemMadeira[] =
 {
-	// Ordem: número de quadros, tempo entre os quadros, vetor com a seqüência de quadros
+	// Ordem: nï¿½mero de quadros, tempo entre os quadros, vetor com a seqï¿½ï¿½ncia de quadros
 	//  direita: 0
 	{1, 1, {1}}	
 };
@@ -29,8 +33,8 @@ bool CarregaItemMadeira()
 		39, 
 		animItemMadeira, 
 		false, 
-		0, 
-		0, 
+		sonsMadeira,
+		1,
 		&AtualizaItemMadeira
 	);
 }
@@ -50,6 +54,7 @@ bool AtualizaItemMadeira(Ator *a, unsigned int mapa)
 				switch(ev.tipoEvento)
 				{
 					case EVT_FOI_PEGO:
+                                            ATOR_TocaEfeito(a,0,mapa);
 						return false;
 				}
 			}
