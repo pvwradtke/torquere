@@ -1,4 +1,5 @@
 #include "jogo.h"
+#include "definesjogo.h"
 
 #include <assert.h>
 #include <stdio.h>
@@ -166,10 +167,11 @@ static void DesenhaTocha(Ator *dark, int mapa, int tocha, unsigned char alpha) {
 }
 
 int main_jogo(void) {
+    int retorno = JOGO_DERROTA;
     // É dia ou noite agora? Começa em dia para começar com a lógica geral do som do portão fechando
     int diaNoite = JOGO_DIA;
     int numNoites = 0;
-    int tempoPeriodo = TEMPO_MUDA_DIA_NOITE;
+    int tempoPeriodo = 1;
     // o alpha do desenho da máscara
     unsigned char alpha = 255;
    
@@ -192,7 +194,7 @@ int main_jogo(void) {
     unsigned int mapa = C2D2M_CarregaMapaMappy("fases/atocha.fmp", "fases/tileset.png");
 
     //Icone que mostra na tela quando o toxado poder segurar no pau
-    unsigned int spritePegaPau = C2D2_CarregaSpriteSet("./imagens/coruja_beta.png", 96, 32);
+    unsigned int spritePegaPau = C2D2_CarregaSpriteSet("./imagens/pega_tocha.png", 0, 0);
     // Carrega os efeitos de som do portão
     unsigned int somPortaoAbre = CA2_CarregaEfeito("audio/portao_abre.ogg");
     unsigned int somPortaoFecha = CA2_CarregaEfeito("audio/portao_fecha.ogg");
@@ -224,8 +226,8 @@ int main_jogo(void) {
 
     // As m�sicas
     unsigned int musicas[2];
-    musicas[0] = CA2_CarregaMusica("audio/AulaPaulo_byPiovezan.it");
-    musicas[1] = CA2_CarregaMusica("audio/venceu.wav");
+    musicas[0] = CA2_CarregaMusica("musicas/game.ogg");
+    musicas[1] = 0; //CA2_CarregaMusica("audio/venceu.wav");
     // Testa se carregou certo (se � diferente de 0)
     if (fonte == 0 || mapa == 0 || !cdark || !ccoruja || !citemMadeira || !cmorcego) {
         printf("Falhou ao carregar alguma coisa. Encerrando.\n");
@@ -258,7 +260,7 @@ int main_jogo(void) {
     CriaInimigo(&inimigos, MARCA_CACHOEIRA, CACHOEIRA, mapa);
 
     // Coloca a m�sica para tocar
-    //CA2_TocaMusica(musicas[0], -1);
+    CA2_TocaMusica(musicas[0], -1);
 
     // Indica se e a primeira vez que vai tocar a musicado fim da fase
     bool primeira = false;
@@ -272,6 +274,7 @@ int main_jogo(void) {
             // Se dia, toca o som do portão fechando, coloca o portão fechado e muda a variável
             if(diaNoite == JOGO_DIA)
             {
+                numNoites++;
 				printf("ANOITECEU\n");
                 CA2_TocaEfeito(somPortaoFecha, 0);
                 diaNoite = JOGO_NOITE;
@@ -288,6 +291,8 @@ int main_jogo(void) {
                 // Fecha o portão
                 C2D2M_AlteraBloco(mapa, 0, xPortao, yPortao, C2D2M_SOLIDO);
                 C2D2M_AlteraBloco(mapa, 0, xPortao, yPortao+1, C2D2M_SOLIDO);
+                C2D2M_AlteraBloco(mapa, 5, xPortao-1, yPortao, -1);
+                C2D2M_AlteraBloco(mapa, 5, xPortao-1, yPortao+1, -1);
             }
             else
             {
@@ -310,6 +315,9 @@ int main_jogo(void) {
                 // Fecha o portão
                 C2D2M_AlteraBloco(mapa, 0, xPortao, yPortao, 0);
                 C2D2M_AlteraBloco(mapa, 0, xPortao, yPortao+1, 0);
+                C2D2M_AlteraBloco(mapa, 5, xPortao-1, yPortao, 195);
+                C2D2M_AlteraBloco(mapa, 5, xPortao-1, yPortao+1, 196);
+
 
             }
         }
@@ -348,6 +356,16 @@ int main_jogo(void) {
         }
         if (ATOR_ColidiuBlocoCenario(dark, mapa, C2D2M_FIM)) {
             ev.tipoEvento = EVT_FIM_FASE;
+            retorno = JOGO_VITORIA;
+            ATOR_EnviaEvento(dark, &ev);
+            if (!primeira) {
+                CA2_TocaMusica(musicas[1], -1);
+                primeira = true;
+            }
+        }
+        if (ATOR_ColidiuBlocoCenario(dark, mapa, MARCA_EREMITA)) {
+            ev.tipoEvento = EVT_FIM_FASE;
+            retorno = JOGO_EREMITA;
             ATOR_EnviaEvento(dark, &ev);
             if (!primeira) {
                 CA2_TocaMusica(musicas[1], -1);
@@ -479,9 +497,10 @@ int main_jogo(void) {
     // Encerra os atores
     ATOR_Encerra();
     // Encerra os mapas
-    C2D2M_Encerra();       
+    C2D2M_Encerra();
+    // 
 
 	teclado[C2D2_ESC].pressionado = false;
 
-    return 0;
+    return retorno;
 }

@@ -10,11 +10,13 @@
       <itemPath>definesjogo.h</itemPath>
       <itemPath>gota.h</itemPath>
       <itemPath>item_madeira.h</itemPath>
+      <itemPath>jogo.h</itemPath>
       <itemPath>jogo_atores.h</itemPath>
       <itemPath>jogo_bola.h</itemPath>
       <itemPath>jogo_coruja.h</itemPath>
       <itemPath>jogo_morcego.h</itemPath>
       <itemPath>lobo.h</itemPath>
+      <itemPath>menu.h</itemPath>
       <itemPath>rato.h</itemPath>
     </logicalFolder>
     <logicalFolder name="SourceFiles"
@@ -25,11 +27,13 @@
       <itemPath>cachoeira.cpp</itemPath>
       <itemPath>gota.cpp</itemPath>
       <itemPath>item_madeira.cpp</itemPath>
+      <itemPath>jogo.cpp</itemPath>
       <itemPath>jogo_bola.cpp</itemPath>
       <itemPath>jogo_coruja.cpp</itemPath>
       <itemPath>jogo_morcego.cpp</itemPath>
       <itemPath>lobo.cpp</itemPath>
       <itemPath>main.cpp</itemPath>
+      <itemPath>menu.cpp</itemPath>
       <itemPath>rato.cpp</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
@@ -74,6 +78,10 @@
         <fortranCompilerTool>
           <developmentMode>5</developmentMode>
         </fortranCompilerTool>
+        <linkerTool>
+          <linkerLibItems>
+          </linkerLibItems>
+        </linkerTool>
       </compileType>
     </conf>
   </confs>
