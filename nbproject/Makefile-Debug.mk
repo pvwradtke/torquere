@@ -32,6 +32,7 @@ OBJECTDIR=build/${CND_CONF}/${CND_PLATFORM}
 # Object Files
 OBJECTFILES= \
 	${OBJECTDIR}/item_madeira.o \
+	${OBJECTDIR}/cachoeira.o \
 	${OBJECTDIR}/jogo_bola.o \
 	${OBJECTDIR}/lobo.o \
 	${OBJECTDIR}/jogo_morcego.o \
@@ -70,6 +71,11 @@ ${OBJECTDIR}/item_madeira.o: nbproject/Makefile-${CND_CONF}.mk item_madeira.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/item_madeira.o item_madeira.cpp
+
+${OBJECTDIR}/cachoeira.o: nbproject/Makefile-${CND_CONF}.mk cachoeira.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/cachoeira.o cachoeira.cpp
 
 ${OBJECTDIR}/jogo_bola.o: nbproject/Makefile-${CND_CONF}.mk jogo_bola.cpp 
 	${MKDIR} -p ${OBJECTDIR}

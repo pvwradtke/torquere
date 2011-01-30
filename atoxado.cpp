@@ -553,7 +553,7 @@ static bool AtualizaAtoxado(Ator *a, unsigned int mapa)
 			{
 				ATOR_Impulsiona(a, VPULO*1.5);
 				ATOR_TrocaAnimacao(a, 9);
-                                int efeito = (random()%5)+2;
+                                int efeito = (rand()%5)+2;
 				ATOR_TocaEfeitoTela(a, efeito, mapa);
 				a->temporizadores[TEMPORIZADOR_MORRENDO] = 120;
 				a->estado.subestado = ESTADO_RODANDO;

@@ -9,7 +9,7 @@
 static bool AtualizaRato(Ator *a, unsigned int mapa);
 
 Animacao animRato[] ={
-	// Ordem: número de quadros, tempo entre os quadros, vetor com a seqüência de quadros
+	// Ordem: nï¿½mero de quadros, tempo entre os quadros, vetor com a seqï¿½ï¿½ncia de quadros
 	//  direita: 0
 	{1, 1, {1}},
 	//  esquerda: 1
@@ -18,6 +18,13 @@ Animacao animRato[] ={
 	{1, 1, {12}},
 	// bola escondida
 	{1, 20, {0}}
+};
+
+char *sonsRato[]={
+	"audio/rato1.ogg",
+	"audio/rato2.ogg",
+        "audio/rato3.ogg",
+	"audio/rato4.ogg"
 };
 
 InfoAnimal infoRato = {
@@ -30,7 +37,9 @@ InfoAnimal infoRato = {
 	//tempo ataque
 	50,
 	//tempo esconderijo
-	300
+	300,
+        // NÃºmero de sons
+        4
 };
 
 
@@ -47,8 +56,8 @@ bool CarregaRato()
 		39, 
 		animRato, 
 		false, 
-		0, 
-		0, 
+		sonsRato,
+		4,
 		&AtualizaRato
 	);
 }

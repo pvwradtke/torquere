@@ -1,4 +1,5 @@
 #include <c2d2/chien2d2.h>
+#include <stdlib.h>
 
 #include <math.h>
 
@@ -8,6 +9,15 @@
 enum {
     ANIM_MORCEGO_DIREITA, ANIM_MORCEGO_ESQUERDA
 };
+
+char *sonsMorcego[]={
+	"audio/morcego1.ogg",
+        "audio/morcego2.ogg",
+        "audio/morcego3.ogg",
+        "audio/morcego4.ogg",
+        "audio/morcego5.ogg"
+};
+
 
 //Animacao 
 // Vetor com as anima��es da nave (2 no total)
@@ -30,7 +40,7 @@ acao acoesMorcego[MORCEGO_ESTADOS][EVT_MAX];
 
 bool JOGO_CarregaMorcego() {
     if(ATOR_CarregaAtorEstatico(MORCEGO, "imagens/coruja_beta.png", 32, 32, 0, 0,
-            32, 32, animMorcego, false, 0, 0, &AtualizaMorcego))
+            32, 32, animMorcego, false, sonsMorcego, 5, &AtualizaMorcego))
     {
         // Associa as ações a matriz
         memset(acoesMorcego, 0, sizeof(acao)*MORCEGO_ESTADOS*EVT_JOGO_PROG);
@@ -83,6 +93,11 @@ bool AtualizaMorcego(Ator *a, unsigned int mapa) {
             a->aux_int[0] = (a->aux_int[0]+5)%360;
             double desloca = 64 * sin(a->aux_int[0]*0.017453293);
             a->y = a->aux_real[0]+desloca;
+            if(a->aux_int[0] == 0 && a->naTela)
+            {
+                if(rand()%5 == 0)
+                    ATOR_TocaEfeito(a, rand()%5, mapa);
+            }
             break;
         }
         case ATOR_ENCERRADO:

@@ -1,6 +1,7 @@
 #include "animal.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "jogo_atores.h"
 
@@ -107,7 +108,10 @@ bool AtualizaAnimal(Ator *a, InfoAnimal *info, unsigned int mapa)
 				{
 					a->velocidade=0;
 					a->estado.subestado=ESTADO_RODANDO;
-					a->temporizadores[0] = info->tempoBote;			
+					a->temporizadores[0] = info->tempoBote;		
+                                        if(info->sons > 0)
+                                            ATOR_TocaEfeitoTela(a, rand()%info->sons, mapa);
+
 					//printf("preparando bote: %x\n", (int)a);
 				}
 

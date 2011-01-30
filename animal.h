@@ -3,7 +3,7 @@
 
 #include <c2d2/ator.h>
 
-// Enumeração dos estados dos animais do jogo
+// Enumeraï¿½ï¿½o dos estados dos animais do jogo
 enum 
 {
 	ANIMAL_ANDANDO=ATOR_PROG_INI, 
@@ -30,6 +30,8 @@ struct InfoAnimal
 	int tempoBote;
 	int tempoAtaque;
 	int tempoEsconderijo;
+
+        int sons;
 };
 
 bool AtualizaAnimal(Ator *a, InfoAnimal *info, unsigned int mapa);

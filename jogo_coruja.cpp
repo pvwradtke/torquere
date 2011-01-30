@@ -40,6 +40,13 @@ Animacao animCoruja[] = {
 // A matriz de eventos do personagem
 acao acoes[CORUJA_ESTADOS][EVT_MAX];
 
+char *sonsCorujao[]={
+	"audio/coruja1.ogg",
+        "audio/coruja2.ogg",
+        "audio/coruja3.ogg",
+        "audio/coruja4.ogg"
+};
+
 // A fun��o que carrega o DarkPhoenix.
 //
 
@@ -114,6 +121,8 @@ bool AtualizaCoruja(Ator *a, unsigned int mapa) {
                 a->aux_int[0]=0;
                 // 0 indica que o personagem está descendo, 1 indica que está subindo
                 a->aux_int[1]= 0;
+                if(a->naTela)
+                    ATOR_TocaEfeito(a, rand()%4, mapa);
             }
             else
             {
