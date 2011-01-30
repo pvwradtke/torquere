@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="62">
+  <logicalFolder name="root" displayName="root" projectFiles="true">
+    <logicalFolder name="HeaderFiles"
+                   displayName="Arquivos de cabeçalho"
+                   projectFiles="true">
+      <itemPath>animal.h</itemPath>
+      <itemPath>atoxado.h</itemPath>
+      <itemPath>cachoeira.h</itemPath>
+      <itemPath>definesjogo.h</itemPath>
+      <itemPath>gota.h</itemPath>
+      <itemPath>item_madeira.h</itemPath>
+      <itemPath>jogo_atores.h</itemPath>
+      <itemPath>jogo_bola.h</itemPath>
+      <itemPath>jogo_coruja.h</itemPath>
+      <itemPath>jogo_morcego.h</itemPath>
+      <itemPath>lobo.h</itemPath>
+      <itemPath>rato.h</itemPath>
+    </logicalFolder>
+    <logicalFolder name="SourceFiles"
+                   displayName="Arquivos de código-fonte"
+                   projectFiles="true">
+      <itemPath>animal.cpp</itemPath>
+      <itemPath>atoxado.cpp</itemPath>
+      <itemPath>cachoeira.cpp</itemPath>
+      <itemPath>gota.cpp</itemPath>
+      <itemPath>item_madeira.cpp</itemPath>
+      <itemPath>jogo_bola.cpp</itemPath>
+      <itemPath>jogo_coruja.cpp</itemPath>
+      <itemPath>jogo_morcego.cpp</itemPath>
+      <itemPath>lobo.cpp</itemPath>
+      <itemPath>main.cpp</itemPath>
+      <itemPath>rato.cpp</itemPath>
+    </logicalFolder>
+    <logicalFolder name="ResourceFiles"
+                   displayName="Arquivos de recurso"
+                   projectFiles="true">
+    </logicalFolder>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Arquivos importantes"
+                   projectFiles="false">
+      <itemPath>Makefile</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <projectmakefile>Makefile</projectmakefile>
+  <confs>
+    <conf name="Debug" type="1">
+      <toolsSet>
+        <developmentServer>localhost</developmentServer>
+        <compilerSet>GNU|GNU</compilerSet>
+        <platform>2</platform>
+      </toolsSet>
+      <compileType>
+        <linkerTool>
+          <linkerLibItems>
+            <linkerOptionItem>-lSDL -lSDL_mixer -lSDL_image -lGL -lGLU -lc2d2 -lca2 -lcator -lcm2</linkerOptionItem>
+          </linkerLibItems>
+        </linkerTool>
+      </compileType>
+    </conf>
+    <conf name="Release" type="1">
+      <toolsSet>
+        <developmentServer>localhost</developmentServer>
+        <compilerSet>GNU|GNU</compilerSet>
+        <platform>2</platform>
+      </toolsSet>
+      <compileType>
+        <cTool>
+          <developmentMode>5</developmentMode>
+        </cTool>
+        <ccTool>
+          <developmentMode>5</developmentMode>
+        </ccTool>
+        <fortranCompilerTool>
+          <developmentMode>5</developmentMode>
+        </fortranCompilerTool>
+      </compileType>
+    </conf>
+  </confs>
+</configurationDescriptor>
