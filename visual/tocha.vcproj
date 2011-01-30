@@ -185,6 +185,14 @@
 			>
 		</File>
 		<File
+			RelativePath="..\cachoeira.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\cachoeira.h"
+			>
+		</File>
+		<File
 			RelativePath="..\gota.cpp"
 			>
 		</File>
