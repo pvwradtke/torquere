@@ -47,6 +47,21 @@ char *sonsCorujao[]={
     "audio/coruja4.ogg"
 };
 
+// A fun��o para fazer a l�gica da atriz
+static bool AtualizaCoruja(Ator *a, unsigned int mapa);
+
+// A ação quando bate no marcador que limita o movimento
+ static bool AcaoCorujaFimDireitaEsquerda(Ator* a, unsigned int mapa, Evento *evt);
+// A ação de eventos de tempo
+ static bool AcaoCorujaTemporizador(Ator* a, unsigned int mapa, Evento *evt);
+// A ação de evento de visualização do jogador
+ static bool AcaoCorujaProximaJogador(Ator* a, unsigned int mapa, Evento *evt);
+// A ação de evento da tochada
+ static bool AcaoCorujatochada(Ator* a, unsigned int mapa, Evento *evt);
+
+ static bool AcaoCorujaAmanheceu(Ator* a, unsigned int mapa, Evento *evt);
+ static bool AcaoCorujaAnoiteceu(Ator* a, unsigned int mapa, Evento *evt);
+
 // A fun��o que carrega o DarkPhoenix.
 //
 
@@ -58,14 +73,23 @@ bool JOGO_CarregaCoruja() {
         memset(acoes, 0, sizeof(acao)*CORUJA_ESTADOS*EVT_JOGO_PROG);
         acoes[CORUJA_ATACANDO][EVT_COLIDIU_FIM_DIREITA] = &AcaoCorujaFimDireitaEsquerda;
         acoes[CORUJA_ATACANDO][EVT_COLIDIU_FIM_ESQUERDA] = &AcaoCorujaFimDireitaEsquerda;
+		acoes[CORUJA_ATACANDO][EVT_AMANHECEU] = &AcaoCorujaAmanheceu;
+
         acoes[CORUJA_DESLOCANDO][EVT_COLIDIU_FIM_DIREITA] = &AcaoCorujaFimDireitaEsquerda;
         acoes[CORUJA_DESLOCANDO][EVT_COLIDIU_FIM_ESQUERDA] = &AcaoCorujaFimDireitaEsquerda;
+		acoes[CORUJA_DESLOCANDO][EVT_AMANHECEU] = &AcaoCorujaAmanheceu;
+
         acoes[CORUJA_ESCONDIDA][EVT_TEMPO] = &AcaoCorujaTemporizador;
 		acoes[CORUJA_ESCONDIDA][EVT_ANOITECEU] = &AcaoCorujaAnoiteceu;
+		acoes[CORUJA_ESCONDIDA][EVT_AMANHECEU] = &AcaoCorujaAmanheceu;
+
         acoes[CORUJA_ARMADA][EVT_TEMPO] = &AcaoCorujaTemporizador;
+		acoes[CORUJA_ARMADA][EVT_AMANHECEU] = &AcaoCorujaAmanheceu;
+		acoes[CORUJA_ARMADA][EVT_TOCHADA] = &AcaoCorujatochada;
+
         acoes[CORUJA_DESLOCANDO][EVT_PROXIMO_JOGADOR] = &AcaoCorujaProximaJogador;
         acoes[CORUJA_DESLOCANDO][EVT_TOCHADA] = &AcaoCorujatochada;
-        acoes[CORUJA_ARMADA][EVT_TOCHADA] = &AcaoCorujatochada;
+		acoes[CORUJA_DESLOCANDO][EVT_AMANHECEU] = &AcaoCorujaAmanheceu;        
         return true;
     }
     else
@@ -239,7 +263,7 @@ bool AtualizaCoruja(Ator *a, unsigned int mapa) {
 	 if(a->estado.estado != CORUJA_ESCONDIDA)
 		 return true;
 
-	 a->temporizadores[0] = 300 + (rand() %200);
+	 a->temporizadores[0] = 100 + (rand() %200);
 
 	 return true;
  }
