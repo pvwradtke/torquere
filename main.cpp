@@ -193,6 +193,7 @@ int main(int narg, char **valarg) {
     unsigned int fonte = C2D2_CarregaFonte("imagens/isabelle64_alpha.png", 64);
     // Carrega a tocha
     unsigned int tocha = C2D2_CarregaSpriteSet("./imagens/mask.png", 512, 512);
+    // Carrega o portão
     // Carrega o mapa
     //unsigned int mapa = C2D2M_CarregaMapaMappy("fases/Aula04-Mapa.FMP", "fases/Aula04-tileset.png");
     unsigned int mapa = C2D2M_CarregaMapaMappy("fases/atocha.fmp", "fases/tileset.png");
@@ -281,6 +282,11 @@ int main(int narg, char **valarg) {
                 Evento evt;
                 evt.tipoEvento = EVT_ANOITECEU;
                 ATOR_EnviaEvento(dark, &evt);
+                // Avisa os inimigos
+                for (size_t i = 0; i < inimigos.size(); ++i) {
+                    if (inimigos[i] == 0)
+                        ATOR_EnviaEvento(inimigos[i], &evt);
+                }
             }
             else
             {
@@ -294,6 +300,12 @@ int main(int narg, char **valarg) {
                 Evento evt;
                 evt.tipoEvento = EVT_AMANHECEU;
                 ATOR_EnviaEvento(dark, &evt);
+                // Avisa os inimigos
+                for (size_t i = 0; i < inimigos.size(); ++i) {
+                    if (inimigos[i] == 0)
+                        ATOR_EnviaEvento(inimigos[i], &evt);
+                }
+
             }
         }
         // Calcula o alpha baseado em ser dia ou noite.

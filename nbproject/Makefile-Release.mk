@@ -10,8 +10,6 @@
 # Environment
 MKDIR=mkdir
 CP=cp
-GREP=grep
-NM=nm
 CCADMIN=CCadmin
 RANLIB=ranlib
 CC=gcc
@@ -33,18 +31,17 @@ OBJECTDIR=build/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
-	${OBJECTDIR}/lobo.o \
+	${OBJECTDIR}/item_madeira.o \
+	${OBJECTDIR}/cachoeira.o \
 	${OBJECTDIR}/jogo_bola.o \
+	${OBJECTDIR}/lobo.o \
+	${OBJECTDIR}/jogo_morcego.o \
+	${OBJECTDIR}/gota.o \
+	${OBJECTDIR}/main.o \
 	${OBJECTDIR}/jogo_coruja.o \
 	${OBJECTDIR}/rato.o \
-	${OBJECTDIR}/main.o \
-	${OBJECTDIR}/item_madeira.o \
-	${OBJECTDIR}/jogo_morcego.o \
-	${OBJECTDIR}/cachoeira.o \
 	${OBJECTDIR}/animal.o \
-	${OBJECTDIR}/atoxado.o \
-	${OBJECTDIR}/gota.o
-
+	${OBJECTDIR}/atoxado.o
 
 # C Compiler Flags
 CFLAGS=
@@ -64,66 +61,66 @@ LDLIBSOPTIONS=
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
-	"${MAKE}"  -f nbproject/Makefile-Release.mk dist/Release/GNU-Linux-x86/torquere
+	${MAKE}  -f nbproject/Makefile-Release.mk dist/Release/GNU-Linux-x86/torquere
 
 dist/Release/GNU-Linux-x86/torquere: ${OBJECTFILES}
 	${MKDIR} -p dist/Release/GNU-Linux-x86
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/torquere ${OBJECTFILES} ${LDLIBSOPTIONS} 
 
-${OBJECTDIR}/lobo.o: lobo.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/lobo.o lobo.cpp
-
-${OBJECTDIR}/jogo_bola.o: jogo_bola.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/jogo_bola.o jogo_bola.cpp
-
-${OBJECTDIR}/jogo_coruja.o: jogo_coruja.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/jogo_coruja.o jogo_coruja.cpp
-
-${OBJECTDIR}/rato.o: rato.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/rato.o rato.cpp
-
-${OBJECTDIR}/main.o: main.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
-
-${OBJECTDIR}/item_madeira.o: item_madeira.cpp 
+${OBJECTDIR}/item_madeira.o: nbproject/Makefile-${CND_CONF}.mk item_madeira.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/item_madeira.o item_madeira.cpp
 
-${OBJECTDIR}/jogo_morcego.o: jogo_morcego.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/jogo_morcego.o jogo_morcego.cpp
-
-${OBJECTDIR}/cachoeira.o: cachoeira.cpp 
+${OBJECTDIR}/cachoeira.o: nbproject/Makefile-${CND_CONF}.mk cachoeira.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/cachoeira.o cachoeira.cpp
 
-${OBJECTDIR}/animal.o: animal.cpp 
+${OBJECTDIR}/jogo_bola.o: nbproject/Makefile-${CND_CONF}.mk jogo_bola.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/jogo_bola.o jogo_bola.cpp
+
+${OBJECTDIR}/lobo.o: nbproject/Makefile-${CND_CONF}.mk lobo.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/lobo.o lobo.cpp
+
+${OBJECTDIR}/jogo_morcego.o: nbproject/Makefile-${CND_CONF}.mk jogo_morcego.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/jogo_morcego.o jogo_morcego.cpp
+
+${OBJECTDIR}/gota.o: nbproject/Makefile-${CND_CONF}.mk gota.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/gota.o gota.cpp
+
+${OBJECTDIR}/main.o: nbproject/Makefile-${CND_CONF}.mk main.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
+
+${OBJECTDIR}/jogo_coruja.o: nbproject/Makefile-${CND_CONF}.mk jogo_coruja.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/jogo_coruja.o jogo_coruja.cpp
+
+${OBJECTDIR}/rato.o: nbproject/Makefile-${CND_CONF}.mk rato.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/rato.o rato.cpp
+
+${OBJECTDIR}/animal.o: nbproject/Makefile-${CND_CONF}.mk animal.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/animal.o animal.cpp
 
-${OBJECTDIR}/atoxado.o: atoxado.cpp 
+${OBJECTDIR}/atoxado.o: nbproject/Makefile-${CND_CONF}.mk atoxado.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/atoxado.o atoxado.cpp
-
-${OBJECTDIR}/gota.o: gota.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/gota.o gota.cpp
 
 # Subprojects
 .build-subprojects:

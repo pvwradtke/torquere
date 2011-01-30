@@ -8,7 +8,7 @@
 Animacao animCachoeira[] ={
 	// Ordem: n�mero de quadros, tempo entre os quadros, vetor com a seq��ncia de quadros
 	//  direita: 0
-	{1, 1, {1}}	
+	{4, 5, {0, 1, 2, 3}}
 };
 
 char *sonsCachoeira[]={
@@ -21,13 +21,13 @@ bool CarregaCachoeira()
 {
 	return ATOR_CarregaAtorEstatico(
 		CACHOEIRA, 
-		"imagens/darkphoenix.png", 
-		32, 
-		42, 
-		4, 
-		2,
-		24, 
-		39, 
+		"imagens/cachoeira.png",
+		128,
+		128,
+		8,
+		0,
+		112,
+		128,
 		animCachoeira, 
 		false, 
 		sonsCachoeira,
