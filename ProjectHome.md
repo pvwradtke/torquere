@@ -1,0 +1,1 @@
+Jogo desenvolvido para a Global Game Jam 2011.
